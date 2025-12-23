@@ -4,7 +4,7 @@ const About = () => {
   const words = "I'm a creative developer & designer with a passion for blending technical expertise with creative edge. Driven by curiosity, I always try to explore and learn new skills.".split(' ');
 
   return (
-    <section id="about" className="py-32 px-6">
+    <div className="py-20 px-6 flex items-center justify-center min-h-screen">
       <div className="max-w-5xl mx-auto">
         <motion.h2
           initial={{ opacity: 0 }}
@@ -35,7 +35,7 @@ const About = () => {
           ))}
         </motion.p>
       </div>
-    </section>
+    </div>
   );
 };
 

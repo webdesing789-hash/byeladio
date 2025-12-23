@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import MarqueeText from './Marquee';
-import { Magnetic, FadeInView } from './SmoothScroll';
+import { Magnetic } from './SmoothScroll';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
       <MarqueeText />
       
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+      <div className="relative z-10 text-center max-w-5xl mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ const Hero = () => {
         >
           <Magnetic strength={0.25}>
             <a 
-              href="#work"
+              href="#about"
               className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full font-medium hover:glow-primary transition-all duration-300"
               data-cursor-hover
             >
@@ -87,7 +87,7 @@ const Hero = () => {
           />
         </motion.div>
       </motion.div>
-    </section>
+    </div>
   );
 };
 

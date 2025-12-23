@@ -23,8 +23,8 @@ const experiences = [
 
 const Experience = () => {
   return (
-    <section className="py-32 px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="py-20 px-6 flex items-center justify-center min-h-screen">
+      <div className="max-w-4xl mx-auto w-full">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -43,6 +43,7 @@ const Experience = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
               className="glass rounded-2xl p-6 md:p-8 hover:border-primary/50 transition-colors"
+              data-cursor-hover
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <div>
@@ -58,7 +59,7 @@ const Experience = () => {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

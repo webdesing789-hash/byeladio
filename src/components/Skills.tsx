@@ -20,6 +20,7 @@ const SkillCard = ({ data, index }: { data: typeof skillsData.develop; index: nu
     viewport={{ once: true }}
     transition={{ delay: index * 0.2 }}
     className="bg-card-gradient glass rounded-2xl p-8 hover:glow-primary transition-all duration-500"
+    data-cursor-hover
   >
     <h3 className="font-display text-2xl font-bold mb-4 text-gradient">{data.title}</h3>
     <p className="text-muted-foreground mb-6 leading-relaxed">{data.description}</p>
@@ -38,8 +39,8 @@ const SkillCard = ({ data, index }: { data: typeof skillsData.develop; index: nu
 
 const Skills = () => {
   return (
-    <section id="skills" className="py-32 px-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="py-20 px-6 flex items-center justify-center min-h-screen">
+      <div className="max-w-6xl mx-auto w-full">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -63,7 +64,7 @@ const Skills = () => {
           <SkillCard data={skillsData.design} index={1} />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
