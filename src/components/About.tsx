@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import FramedCard from './FramedCard';
 
 const stats = [
   { value: "100+", label: "Businesses Automated" },
@@ -6,22 +7,6 @@ const stats = [
   { value: "98%", label: "Customer Satisfaction" },
   { value: "24/7", label: "Availability" },
 ];
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-50px" },
-  transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }
-};
-
-const staggerContainer = {
-  whileInView: {
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
-    }
-  }
-};
 
 const About = () => {
   return (
@@ -57,61 +42,57 @@ const About = () => {
           Real outcomes from businesses that chose Orbita AI
         </motion.p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ 
-                duration: 0.7, 
-                delay: 0.3 + i * 0.1, 
-                ease: [0.25, 0.1, 0.25, 1] 
-              }}
+            <FramedCard 
+              key={i} 
+              delay={0.3 + i * 0.1}
+              glowColor="hsl(260 80% 65%)"
               className="text-center"
             >
-              <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
-                {stat.value}
+              <div className="p-6">
+                <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-muted-foreground text-sm">
+                  {stat.label}
+                </div>
               </div>
-              <div className="text-muted-foreground text-sm">
-                {stat.label}
-              </div>
-            </motion.div>
+            </FramedCard>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mt-20 glass rounded-2xl p-8 text-center"
+        <FramedCard 
+          delay={0.6}
+          glowColor="hsl(260 80% 65%)"
+          className="mt-20"
         >
-          <h4 className="font-display text-2xl md:text-3xl font-bold mb-4">
-            Why Businesses Choose Orbita AI
-          </h4>
-          <div className="grid md:grid-cols-2 gap-6 mt-8 text-left">
-            {[
-              { title: "24/7 Availability Without the Cost", desc: "One AI agent handles the workload of 5+ employees at a fraction of the cost—saving businesses an average of $50,000+ annually." },
-              { title: "Instant Response, Every Time", desc: "Our bots respond in under 3 seconds, capturing leads when they're most engaged." },
-              { title: "Smart Integration with Your Business", desc: "Connects with Stripe, Google Calendar, HubSpot, Salesforce, Shopify, and 400+ more tools seamlessly." },
-              { title: "Unlimited Automation Flows", desc: "Capture → Qualify → Schedule → Collect → Deliver. Zero manual data entry required." },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 + i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="space-y-2"
-              >
-                <h5 className="font-display font-bold text-foreground">{item.title}</h5>
-                <p className="text-muted-foreground text-sm">{item.desc}</p>
-              </motion.div>
-            ))}
+          <div className="p-8 text-center">
+            <h4 className="font-display text-2xl md:text-3xl font-bold mb-4">
+              Why Businesses Choose Orbita AI
+            </h4>
+            <div className="grid md:grid-cols-2 gap-6 mt-8 text-left">
+              {[
+                { title: "24/7 Availability Without the Cost", desc: "One AI agent handles the workload of 5+ employees at a fraction of the cost—saving businesses an average of $50,000+ annually." },
+                { title: "Instant Response, Every Time", desc: "Our bots respond in under 3 seconds, capturing leads when they're most engaged." },
+                { title: "Smart Integration with Your Business", desc: "Connects with Stripe, Google Calendar, HubSpot, Salesforce, Shopify, and 400+ more tools seamlessly." },
+                { title: "Unlimited Automation Flows", desc: "Capture → Qualify → Schedule → Collect → Deliver. Zero manual data entry required." },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.7 + i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="space-y-2 group"
+                >
+                  <h5 className="font-display font-bold text-foreground group-hover:text-gradient transition-all duration-300">{item.title}</h5>
+                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </motion.div>
+        </FramedCard>
       </div>
     </div>
   );
