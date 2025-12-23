@@ -488,6 +488,8 @@ const Projects = () => {
                 ))}
               </div>
 
+              {/* Spacer for reading time */}
+              <div className="flex-shrink-0 w-[20vw]" aria-hidden="true" />
               <div className="flex-shrink-0 w-[30vw]" aria-hidden="true" />
             </motion.div>
 
