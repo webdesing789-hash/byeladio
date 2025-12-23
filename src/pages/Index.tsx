@@ -9,6 +9,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import LoadingScreen from "@/components/LoadingScreen";
+import SocialIcons from "@/components/SocialIcons";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,6 +27,7 @@ const Index = () => {
           <CustomCursor />
           <SpaceBackground />
           <Header />
+          <SocialIcons />
           
           <main className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth">
             <section id="hero" className="min-h-screen snap-start snap-always flex items-center justify-center">
