@@ -16,7 +16,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="relative min-h-screen cursor-none">
+    <div className="relative cursor-none">
       <AnimatePresence>
         {isLoading && (
           <LoadingScreen onComplete={() => setIsLoading(false)} />
@@ -29,32 +29,34 @@ const Index = () => {
           <SpaceBackground />
           <Header />
           
-          <main className="relative z-10">
-            <section id="hero" className="min-h-screen flex items-center justify-center">
+          <main className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth">
+            <section id="hero" className="min-h-screen snap-start snap-always flex items-center justify-center">
               <Hero />
             </section>
             
-            <section id="about">
+            <section id="about" className="min-h-screen snap-start snap-always">
               <About />
             </section>
             
-            <section id="skills">
+            <section id="skills" className="min-h-screen snap-start snap-always">
               <Skills />
             </section>
             
-            <section id="experience">
+            <section id="experience" className="min-h-screen snap-start snap-always">
               <Experience />
             </section>
             
-            <section id="work">
+            <section id="work" className="min-h-screen snap-start snap-always">
               <Projects />
             </section>
             
-            <section id="contact">
+            <section id="contact" className="min-h-screen snap-start snap-always">
               <Contact />
             </section>
             
-            <Footer />
+            <section className="snap-start">
+              <Footer />
+            </section>
           </main>
         </>
       )}
