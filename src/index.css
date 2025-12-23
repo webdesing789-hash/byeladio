@@ -120,4 +120,8 @@
     -webkit-text-stroke: 1px hsl(var(--foreground) / 0.3);
     color: transparent;
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
 }
