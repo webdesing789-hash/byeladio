@@ -1,22 +1,18 @@
-import { motion } from 'framer-motion';
-
 const Footer = () => {
   return (
-    <motion.footer 
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      className="py-8 px-6 border-t border-border"
-    >
+    <footer className="py-8 px-6 border-t border-border">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <span className="font-display font-bold text-gradient">Orbita AI</span>
+        </div>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} All rights reserved.
+          © {new Date().getFullYear()} Orbita AI. All rights reserved.
         </p>
         <p className="text-sm text-muted-foreground">
-          Designed & Developed with <span className="text-primary">♥</span>
+          100% Confidential — Your data is protected under strict NDA
         </p>
       </div>
-    </motion.footer>
+    </footer>
   );
 };
 

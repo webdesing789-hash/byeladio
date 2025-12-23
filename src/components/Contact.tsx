@@ -1,24 +1,22 @@
 import { motion } from 'framer-motion';
-import { Magnetic } from './SmoothScroll';
 
-const socialLinks = [
-  { name: "GitHub", url: "#" },
-  { name: "LinkedIn", url: "#" },
-  { name: "Twitter", url: "#" },
-  { name: "Instagram", url: "#" }
+const integrations = [
+  "WhatsApp", "Stripe", "Google Calendar", "Shopify", "Instagram", 
+  "Facebook", "HubSpot", "Salesforce", "Slack", "Telegram",
+  "WordPress", "WooCommerce", "PayPal", "Notion", "Airtable", "Google Sheets"
 ];
 
 const Contact = () => {
   return (
-    <div className="py-20 px-6 flex items-center justify-center min-h-screen">
-      <div className="max-w-4xl mx-auto text-center w-full">
+    <div id="integrations" className="py-20 px-6 flex items-center justify-center min-h-screen">
+      <div className="max-w-5xl mx-auto text-center w-full">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="font-display text-4xl md:text-6xl font-bold mb-8"
+          className="font-display text-4xl md:text-5xl font-bold mb-4"
         >
-          LET'S WORK TOGETHER
+          Seamless Integration with 400+ Tools
         </motion.h2>
         
         <motion.p
@@ -28,47 +26,82 @@ const Contact = () => {
           transition={{ delay: 0.1 }}
           className="text-muted-foreground text-lg mb-12 max-w-2xl mx-auto"
         >
-          Have a project in mind? I'd love to hear about it. Let's create something amazing together.
+          Orbita AI connects with your existing tech stack in days, not months. Built on n8n workflow automation.
         </motion.p>
-        
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
+          className="flex flex-wrap justify-center gap-3 mb-16"
         >
-          <Magnetic strength={0.2}>
-            <a
-              href="mailto:hello@example.com"
-              className="inline-block glass px-8 py-4 rounded-full font-display font-bold text-lg hover:glow-primary hover:bg-primary/10 transition-all duration-300"
-              data-cursor-hover
+          {integrations.map((tool, i) => (
+            <motion.span
+              key={tool}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.03 }}
+              className="px-4 py-2 glass rounded-full text-sm text-foreground hover:bg-primary/20 transition-colors cursor-default"
             >
-              hello@example.com
-            </a>
-          </Magnetic>
+              {tool}
+            </motion.span>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="glass rounded-2xl p-8 mb-12"
+        >
+          <h3 className="font-display text-2xl font-bold mb-4">
+            Ready to Automate Your Business?
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            We don't take on every client. We prioritize businesses where automation will make a real impact. If your business handles repetitive customer inquiries, processes orders, or books appointments—we can help.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Ask any question directly to our team | Response within 24 hours | No sales pressure
+          </p>
         </motion.div>
         
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-16 pt-8 border-t border-border"
+          transition={{ delay: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-6"
         >
-          <p className="text-sm text-muted-foreground mb-6">Find me on</p>
-          <div className="flex items-center justify-center gap-6">
-            {socialLinks.map((link) => (
-              <Magnetic key={link.name} strength={0.3}>
-                <a
-                  href={link.url}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  data-cursor-hover
-                >
-                  {link.name}
-                </a>
-              </Magnetic>
-            ))}
-          </div>
+          <a
+            href="https://wa.link/gpyd1p"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            data-cursor-hover
+          >
+            WhatsApp
+          </a>
+          <a
+            href="https://www.linkedin.com/company/orbita-ai/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            data-cursor-hover
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://www.instagram.com/orbit.bot/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            data-cursor-hover
+          >
+            Instagram
+          </a>
         </motion.div>
       </div>
     </div>

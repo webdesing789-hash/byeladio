@@ -10,7 +10,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const duration = 3000; // 3 seconds total
+    const duration = 3000;
     const interval = 30;
     const increment = (100 * interval) / duration;
 
@@ -45,7 +45,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           <div className="absolute inset-0 flex items-center overflow-hidden opacity-5">
             <div className="marquee whitespace-nowrap">
               <span className="font-display text-[15vw] font-bold tracking-tight">
-                A CREATIVE DEVELOPER • A CREATIVE DESIGNER • A CREATIVE DEVELOPER • A CREATIVE DESIGNER •
+                AI SOLUTIONS • DIGITAL SERVICES • AUTOMATION • AI SOLUTIONS • DIGITAL SERVICES • AUTOMATION •
               </span>
             </div>
           </div>
@@ -62,7 +62,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              Welcome
+              Orbita AI
             </motion.h1>
 
             {/* Loading bar container */}
