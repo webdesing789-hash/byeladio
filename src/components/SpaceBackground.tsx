@@ -1,9 +1,9 @@
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
-import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
 
-// Hook to detect mobile/tablet devices
+// Hook to detect mobile devices
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -20,12 +20,27 @@ function useIsMobile() {
   return isMobile;
 }
 
-// Galaxy component using PLY point cloud
-function Galaxy({ isMobile }: { isMobile: boolean }) {
-  const pointsRef = useRef<THREE.Points>(null);
-  const geometry = useLoader(PLYLoader, '/models/galaxy.ply');
+// Stars model component
+function StarsModel({ isMobile }: { isMobile: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF('/models/stars/scene.gltf');
   
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Enhance star materials
+  useEffect(() => {
+    scene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = child.material as THREE.MeshStandardMaterial;
+        if (material) {
+          material.emissive = new THREE.Color('#ffffff');
+          material.emissiveIntensity = 2;
+          material.transparent = true;
+          material.opacity = 0.9;
+        }
+      }
+    });
+  }, [scene]);
 
   // Mouse tracking for desktop
   useEffect(() => {
@@ -40,44 +55,30 @@ function Galaxy({ isMobile }: { isMobile: boolean }) {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile]);
-  
-  const material = useMemo(() => {
-    return new THREE.PointsMaterial({
-      size: isMobile ? 0.02 : 0.015,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.95,
-      sizeAttenuation: true,
-      blending: THREE.AdditiveBlending,
-    });
-  }, [isMobile]);
 
   useFrame((state) => {
-    if (pointsRef.current) {
+    if (groupRef.current) {
       const time = state.clock.elapsedTime;
       
-      // Base slow rotation
-      pointsRef.current.rotation.y = time * 0.03;
+      // Slow rotation
+      groupRef.current.rotation.y = time * 0.02;
       
       if (isMobile) {
-        // Gentle automatic tilt on mobile
-        pointsRef.current.rotation.x = Math.sin(time * 0.15) * 0.1 + 0.3;
+        groupRef.current.rotation.x = Math.sin(time * 0.1) * 0.05;
       } else {
-        // Mouse-reactive tilt on desktop
-        pointsRef.current.rotation.x = 0.3 + mousePosition.y * 0.1;
-        pointsRef.current.rotation.z = mousePosition.x * 0.05;
+        // Mouse-reactive movement on desktop
+        groupRef.current.rotation.x = mousePosition.y * 0.05;
+        groupRef.current.rotation.z = mousePosition.x * 0.03;
       }
     }
   });
 
+  const scale = useMemo(() => isMobile ? 0.003 : 0.004, [isMobile]);
+
   return (
-    <points 
-      ref={pointsRef} 
-      geometry={geometry} 
-      material={material} 
-      scale={0.012} 
-      position={[0, 0, -1]} 
-    />
+    <group ref={groupRef} scale={scale} position={[0, 0, -50]}>
+      <primitive object={scene} />
+    </group>
   );
 }
 
@@ -92,13 +93,13 @@ const SpaceBackground = () => {
     <div className="fixed inset-0 -z-10">
       <div className="absolute inset-0 bg-cosmic" />
       <Canvas
-        camera={{ position: [0, 0, 3], fov: 60 }}
+        camera={{ position: [0, 0, 100], fov: 60 }}
         gl={{ 
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
         }}
-        dpr={[1.5, 2]}
+        dpr={[1, 2]}
         style={{ 
           background: 'transparent',
           position: 'absolute',
@@ -108,24 +109,27 @@ const SpaceBackground = () => {
           height: '100%',
         }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffffff" />
-        <pointLight position={[-10, -10, -10]} intensity={0.4} color="#a855f7" />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[100, 100, 100]} intensity={1} color="#ffffff" />
+        <pointLight position={[-100, -100, -100]} intensity={0.5} color="#a855f7" />
         
         <Suspense fallback={<LoadingFallback />}>
-          <Galaxy isMobile={isMobile} />
+          <StarsModel isMobile={isMobile} />
         </Suspense>
       </Canvas>
       
-      {/* Subtle vignette */}
+      {/* Vignette */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.3) 60%, hsl(230 25% 5% / 0.7) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.2) 50%, hsl(230 25% 5% / 0.7) 100%)',
         }}
       />
     </div>
   );
 };
+
+// Preload the model
+useGLTF.preload('/models/stars/scene.gltf');
 
 export default SpaceBackground;
