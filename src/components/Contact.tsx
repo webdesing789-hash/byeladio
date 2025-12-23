@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Magnetic } from './SmoothScroll';
 
 const socialLinks = [
   { name: "GitHub", url: "#" },
@@ -30,16 +31,22 @@ const Contact = () => {
           Have a project in mind? I'd love to hear about it. Let's create something amazing together.
         </motion.p>
         
-        <motion.a
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          href="mailto:hello@example.com"
-          className="inline-block glass px-8 py-4 rounded-full font-display font-bold text-lg hover:glow-primary hover:bg-primary/10 transition-all duration-300"
         >
-          hello@example.com
-        </motion.a>
+          <Magnetic strength={0.2}>
+            <a
+              href="mailto:hello@example.com"
+              className="inline-block glass px-8 py-4 rounded-full font-display font-bold text-lg hover:glow-primary hover:bg-primary/10 transition-all duration-300"
+              data-cursor-hover
+            >
+              hello@example.com
+            </a>
+          </Magnetic>
+        </motion.div>
         
         <motion.div
           initial={{ opacity: 0 }}
@@ -51,13 +58,15 @@ const Contact = () => {
           <p className="text-sm text-muted-foreground mb-6">Find me on</p>
           <div className="flex items-center justify-center gap-6">
             {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.name}
-              </a>
+              <Magnetic key={link.name} strength={0.3}>
+                <a
+                  href={link.url}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  data-cursor-hover
+                >
+                  {link.name}
+                </a>
+              </Magnetic>
             ))}
           </div>
         </motion.div>

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Magnetic } from './SmoothScroll';
 
 const projects = [
   {
@@ -46,35 +47,43 @@ const Projects = () => {
         
         <div className="grid md:grid-cols-2 gap-8">
           {projects.map((project, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="group relative glass rounded-2xl overflow-hidden hover:glow-primary transition-all duration-500 cursor-pointer"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              
-              <div className="relative p-8">
-                <span className="font-display text-6xl font-bold text-muted-foreground/20 group-hover:text-primary/30 transition-colors">
-                  {project.number}
-                </span>
+            <Magnetic key={i} strength={0.05}>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative glass rounded-2xl overflow-hidden hover:glow-primary transition-all duration-500 cursor-pointer"
+                data-cursor-hover
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                 
-                <div className="mt-4">
-                  <p className="text-sm text-primary mb-2">{project.category}</p>
-                  <h3 className="font-display text-2xl font-bold mb-3">{project.title}</h3>
-                  <p className="text-sm text-muted-foreground">{project.tools}</p>
+                <div className="relative p-8">
+                  <span className="font-display text-6xl font-bold text-muted-foreground/20 group-hover:text-primary/30 transition-colors">
+                    {project.number}
+                  </span>
+                  
+                  <div className="mt-4">
+                    <p className="text-sm text-primary mb-2">{project.category}</p>
+                    <h3 className="font-display text-2xl font-bold mb-3">{project.title}</h3>
+                    <p className="text-sm text-muted-foreground">{project.tools}</p>
+                  </div>
+                  
+                  <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                    <span>View Project</span>
+                    <motion.svg 
+                      className="w-4 h-4" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                      whileHover={{ x: 5 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </motion.svg>
+                  </div>
                 </div>
-                
-                <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                  <span>View Project</span>
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Magnetic>
           ))}
         </div>
       </div>

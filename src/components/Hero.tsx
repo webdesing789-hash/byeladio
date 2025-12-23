@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import MarqueeText from './Marquee';
+import { Magnetic, FadeInView } from './SmoothScroll';
 
 const Hero = () => {
   return (
@@ -45,17 +46,47 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-12"
         >
-          <a 
-            href="#work"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full font-medium hover:glow-primary transition-all duration-300"
-          >
-            View My Work
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </a>
+          <Magnetic strength={0.25}>
+            <a 
+              href="#work"
+              className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full font-medium hover:glow-primary transition-all duration-300"
+              data-cursor-hover
+            >
+              View My Work
+              <motion.svg 
+                className="w-4 h-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                animate={{ y: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </motion.svg>
+            </a>
+          </Magnetic>
         </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div 
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2"
+        >
+          <motion.div 
+            className="w-1.5 h-1.5 rounded-full bg-primary"
+            animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
