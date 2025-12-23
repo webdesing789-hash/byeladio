@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 function SpaceModel() {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF('/models/scene.gltf');
+  const { scene } = useGLTF('/models/need_some_space.glb');
 
   useFrame((state) => {
     if (groupRef.current) {
