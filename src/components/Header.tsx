@@ -11,13 +11,13 @@ const Header = () => {
     >
       <nav className="max-w-7xl mx-auto flex items-center justify-between">
         <Magnetic strength={0.2}>
-          <a href="#" className="font-display font-bold text-lg text-foreground hover:text-primary transition-colors" data-cursor-hover>
-            portfolio.dev
+          <a href="#" className="font-display font-bold text-xl text-gradient" data-cursor-hover>
+            Orbita AI
           </a>
         </Magnetic>
         
         <div className="hidden md:flex items-center gap-8">
-          {['About', 'Skills', 'Work', 'Contact'].map((item) => (
+          {['Home', 'Features', 'Pricing', 'Integrations'].map((item) => (
             <Magnetic key={item} strength={0.15}>
               <a 
                 href={`#${item.toLowerCase()}`} 
@@ -32,11 +32,13 @@ const Header = () => {
 
         <Magnetic strength={0.2}>
           <a 
-            href="#contact"
+            href="https://www.instagram.com/orbit.bot/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="glass px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
             data-cursor-hover
           >
-            Let's Talk
+            Follow Us
           </a>
         </Magnetic>
       </nav>

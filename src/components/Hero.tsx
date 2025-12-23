@@ -8,51 +8,59 @@ const Hero = () => {
       <MarqueeText />
       
       <div className="relative z-10 text-center max-w-5xl mx-auto">
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-muted-foreground text-lg mb-4"
+          className="glass inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-muted-foreground mb-8"
         >
-          Hello! I'm
-        </motion.p>
+          <span className="text-green-400">✓</span> Trusted by 100+ businesses in the USA
+          <span className="mx-2">|</span>
+          <span className="text-yellow-400">⚡</span> Response time: Under 3 seconds
+        </motion.div>
         
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6"
+          className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
         >
-          <span className="text-gradient">YOUR NAME</span>
+          <span className="text-gradient">AI Solutions & Digital Services</span>
+          <br />
+          <span className="text-foreground">for Modern Businesses</span>
         </motion.h1>
         
-        <motion.div
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-xl md:text-2xl"
+          className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6"
         >
-          <span className="text-muted-foreground">A Creative</span>
-          <div className="flex items-center gap-4">
-            <span className="font-display font-bold text-foreground">Developer</span>
-            <span className="text-primary">&</span>
-            <span className="font-display font-bold text-outline">Designer</span>
-          </div>
-        </motion.div>
+          From intelligent chatbots and voice agents to custom web development and branding—we deliver end-to-end digital solutions that automate, elevate, and scale your business 24/7.
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="text-muted-foreground mb-8"
+        >
+          AI automation • Web & app development • Logo design • Voice agents
+        </motion.p>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-12"
+          className="flex flex-col items-center gap-4"
         >
           <Magnetic strength={0.25}>
             <a 
-              href="#about"
+              href="#features"
               className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full font-medium hover:glow-primary transition-all duration-300"
               data-cursor-hover
             >
-              View My Work
+              See How It Works
               <motion.svg 
                 className="w-4 h-4" 
                 fill="none" 
@@ -65,6 +73,7 @@ const Hero = () => {
               </motion.svg>
             </a>
           </Magnetic>
+          <span className="text-sm text-muted-foreground">No sales pressure • Only real potential projects</span>
         </motion.div>
       </div>
 
