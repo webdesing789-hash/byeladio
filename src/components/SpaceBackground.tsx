@@ -1,7 +1,8 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
 
 // Hook to detect mobile/tablet devices
 function useIsMobile() {
@@ -23,6 +24,36 @@ function useIsMobile() {
   return { isMobile, isTablet };
 }
 
+// Galaxy component using PLY point cloud
+function Galaxy({ isMobile }: { isMobile: boolean }) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const geometry = useLoader(PLYLoader, '/models/galaxy.ply');
+  
+  const material = useMemo(() => {
+    return new THREE.PointsMaterial({
+      size: isMobile ? 0.015 : 0.012,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
+    });
+  }, [isMobile]);
+
+  useFrame((state) => {
+    if (pointsRef.current) {
+      const time = state.clock.elapsedTime;
+      // Slow rotation
+      pointsRef.current.rotation.y = time * 0.02;
+      pointsRef.current.rotation.x = Math.sin(time * 0.1) * 0.05;
+    }
+  });
+
+  return (
+    <points ref={pointsRef} geometry={geometry} material={material} scale={0.008} position={[0, 0, -2]} />
+  );
+}
+
 function EarthModel({ isMobile, isTablet }: { isMobile: boolean; isTablet: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/models/earth/export.gltf');
@@ -32,35 +63,34 @@ function EarthModel({ isMobile, isTablet }: { isMobile: boolean; isTablet: boole
 
   // Responsive scale and position - larger on mobile for better visibility
   const scale = useMemo(() => {
-    if (isMobile) return 0.28; // Increased from 0.22
+    if (isMobile) return 0.28;
     if (isTablet) return 0.32;
     return 0.35;
   }, [isMobile, isTablet]);
 
   const position = useMemo((): [number, number, number] => {
-    if (isMobile) return [0.15, 0.1, 0]; // More centered
+    if (isMobile) return [0.15, 0.1, 0];
     if (isTablet) return [0.15, 0.05, 0];
     return [0, 0, 0];
   }, [isMobile, isTablet]);
 
-  // Enhance materials - HIGH QUALITY on all devices
+  // Enhance materials
   useEffect(() => {
     scene.traverse((child) => {
       if (child instanceof THREE.Points) {
         const material = child.material as THREE.PointsMaterial;
         material.transparent = true;
-        material.opacity = 1.0; // Full opacity for visibility
+        material.opacity = 1.0;
         material.sizeAttenuation = true;
         material.blending = THREE.AdditiveBlending;
-        // Larger points on mobile for better visibility
         if (isMobile && material.size) {
-          material.size = material.size * 1.2; // Increased from 0.7
+          material.size = material.size * 1.2;
         }
       }
       if (child instanceof THREE.Mesh) {
         const material = child.material as THREE.MeshStandardMaterial;
         if (material.emissive) {
-          material.emissiveIntensity = 2.0; // Higher glow
+          material.emissiveIntensity = 2.0;
         }
       }
     });
@@ -80,33 +110,23 @@ function EarthModel({ isMobile, isTablet }: { isMobile: boolean; isTablet: boole
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile]);
 
-  // Touch interaction removed - using automatic animation on mobile instead
-
   useFrame((state) => {
     if (groupRef.current) {
       const time = state.clock.elapsedTime;
       
       if (isMobile || isTablet) {
-        // Automatic gentle animation on mobile/tablet (no touch required)
         groupRef.current.rotation.x = Math.sin(time * 0.2) * 0.1;
-        groupRef.current.rotation.y = time * 0.15; // Continuous rotation
-        
-        // Gentle floating motion
+        groupRef.current.rotation.y = time * 0.15;
         groupRef.current.position.y = position[1] + Math.sin(time * 0.4) * 0.04;
         groupRef.current.position.x = position[0] + Math.sin(time * 0.3) * 0.02;
       } else {
-        // Desktop: mouse follow + rotation
         const sensitivity = 0.15;
         targetRotation.current.x = mousePosition.y * sensitivity;
         targetRotation.current.y = mousePosition.x * 0.2;
 
         groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.02;
         groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.02;
-        
-        // Slow continuous rotation
         groupRef.current.rotation.y += 0.001;
-        
-        // Gentle floating motion
         groupRef.current.position.y = position[1] + Math.sin(time * 0.3) * 0.05;
       }
     }
@@ -126,9 +146,8 @@ function LoadingFallback() {
 const SpaceBackground = () => {
   const { isMobile, isTablet } = useIsMobile();
   
-  // Camera settings - closer on mobile for better detail
   const cameraSettings = useMemo((): { position: [number, number, number]; fov: number } => ({
-    position: isMobile ? [0, 0, 4.5] : [0, 0, 5], // Closer camera on mobile
+    position: isMobile ? [0, 0, 4.5] : [0, 0, 5],
     fov: isMobile ? 50 : 50,
   }), [isMobile]);
 
@@ -138,11 +157,11 @@ const SpaceBackground = () => {
       <Canvas
         camera={{ position: cameraSettings.position, fov: cameraSettings.fov }}
         gl={{ 
-          antialias: true, // Enable antialiasing on all devices for quality
+          antialias: true,
           alpha: true,
-          powerPreference: 'high-performance', // Max quality
+          powerPreference: 'high-performance',
         }}
-        dpr={[1.5, 2]} // Higher pixel ratio for crisp visuals
+        dpr={[1.5, 2]}
         style={{ 
           background: 'transparent',
           position: 'absolute',
@@ -158,11 +177,14 @@ const SpaceBackground = () => {
         <pointLight position={[0, 5, 5]} intensity={0.4} color="#60a5fa" />
         
         <Suspense fallback={<LoadingFallback />}>
+          {/* Galaxy background */}
+          <Galaxy isMobile={isMobile} />
+          {/* Earth in foreground */}
           <EarthModel isMobile={isMobile} isTablet={isTablet} />
         </Suspense>
       </Canvas>
       
-      {/* Lighter vignette for better galaxy visibility */}
+      {/* Vignette */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
