@@ -39,57 +39,68 @@ const SocialIcons = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
-          whileHover={{ scale: 1.15 }}
+          whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.95 }}
-          className="group relative w-11 h-11 cursor-none"
+          className="group relative w-12 h-12 cursor-none"
           data-cursor-hover
           aria-label={social.name}
         >
-          {/* Outer glow ring */}
-          <motion.div
-            className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300"
-            style={{ backgroundColor: social.color }}
-          />
-          
-          {/* Animated border frame */}
-          <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-white/50 transition-all duration-300 overflow-hidden">
-            {/* Corner accents that appear on hover */}
-            <span className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-transparent group-hover:border-white transition-all duration-300 rounded-tl-sm" />
-            <span className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-transparent group-hover:border-white transition-all duration-300 rounded-tr-sm" />
-            <span className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-transparent group-hover:border-white transition-all duration-300 rounded-bl-sm" />
-            <span className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-transparent group-hover:border-white transition-all duration-300 rounded-br-sm" />
-          </div>
-          
-          {/* Background box */}
-          <div 
-            className="absolute inset-0 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 group-hover:border-white/30 group-hover:bg-background/90 transition-all duration-300"
-            style={{
-              boxShadow: 'none',
+          {/* Intense outer glow */}
+          <div
+            className="absolute -inset-2 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-300"
+            style={{ 
+              backgroundColor: social.color,
+              boxShadow: `0 0 30px ${social.color}, 0 0 60px ${social.color}`
             }}
           />
           
-          {/* Glow effect on hover */}
+          {/* Secondary glow layer */}
+          <div
+            className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-80 blur-md transition-all duration-300"
+            style={{ backgroundColor: social.color }}
+          />
+          
+          {/* Main frame/box */}
           <div 
-            className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+            className="absolute inset-0 rounded-lg border-2 border-border/60 bg-background/90 backdrop-blur-sm transition-all duration-300 group-hover:border-white group-hover:bg-black/80"
+            style={{
+              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.3)'
+            }}
+          />
+          
+          {/* Corner brackets */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Top-left corner */}
+            <span className="absolute -top-0.5 -left-0.5 w-3 h-3 border-t-2 border-l-2 border-transparent group-hover:border-white transition-all duration-300" />
+            {/* Top-right corner */}
+            <span className="absolute -top-0.5 -right-0.5 w-3 h-3 border-t-2 border-r-2 border-transparent group-hover:border-white transition-all duration-300" />
+            {/* Bottom-left corner */}
+            <span className="absolute -bottom-0.5 -left-0.5 w-3 h-3 border-b-2 border-l-2 border-transparent group-hover:border-white transition-all duration-300" />
+            {/* Bottom-right corner */}
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 border-b-2 border-r-2 border-transparent group-hover:border-white transition-all duration-300" />
+          </div>
+          
+          {/* Inner color glow */}
+          <div 
+            className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-50 transition-all duration-300"
             style={{ 
-              backgroundColor: social.color,
-              boxShadow: `0 0 20px ${social.color}, 0 0 40px ${social.color}40`
+              background: `radial-gradient(circle at center, ${social.color}60 0%, transparent 70%)`
             }}
           />
           
           {/* Icon */}
-          <div className="relative w-full h-full flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center z-10">
             <social.icon 
-              size={18} 
-              className="text-muted-foreground group-hover:text-white transition-colors duration-300" 
+              size={20} 
+              className="text-muted-foreground group-hover:text-white transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" 
             />
           </div>
           
-          {/* Tooltip */}
+          {/* Tooltip with glow */}
           <span 
-            className="absolute left-full ml-4 px-3 py-1.5 text-xs font-medium bg-background/95 backdrop-blur-sm border border-border rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none shadow-lg"
+            className="absolute left-full ml-4 px-3 py-1.5 text-xs font-medium text-white bg-black/90 backdrop-blur-sm border border-white/20 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none"
             style={{
-              boxShadow: `0 0 15px ${social.color}30`
+              boxShadow: `0 0 20px ${social.color}50, 0 4px 20px rgba(0,0,0,0.5)`
             }}
           >
             {social.name}
@@ -102,7 +113,7 @@ const SocialIcons = () => {
         initial={{ scaleY: 0 }}
         animate={{ scaleY: 1 }}
         transition={{ delay: 1.6, duration: 0.5 }}
-        className="w-px h-16 bg-gradient-to-b from-border to-transparent mx-auto mt-2 origin-top"
+        className="w-px h-16 bg-gradient-to-b from-primary/50 to-transparent mx-auto mt-2 origin-top"
       />
     </motion.div>
   );
