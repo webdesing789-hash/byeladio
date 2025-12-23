@@ -80,40 +80,35 @@ function EarthModel({ isMobile, isTablet }: { isMobile: boolean; isTablet: boole
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile]);
 
-  // Touch interaction for mobile
-  useEffect(() => {
-    if (!isMobile && !isTablet) return;
-    
-    const handleTouch = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        const x = (touch.clientX / window.innerWidth) * 2 - 1;
-        const y = -(touch.clientY / window.innerHeight) * 2 + 1;
-        setMousePosition({ x: x * 0.5, y: y * 0.5 }); // Reduced sensitivity for touch
-      }
-    };
-
-    window.addEventListener('touchmove', handleTouch, { passive: true });
-    return () => window.removeEventListener('touchmove', handleTouch);
-  }, [isMobile, isTablet]);
+  // Touch interaction removed - using automatic animation on mobile instead
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Smooth mouse/touch follow
-      const sensitivity = isMobile ? 0.08 : 0.15;
-      targetRotation.current.x = mousePosition.y * sensitivity;
-      targetRotation.current.y = mousePosition.x * (isMobile ? 0.12 : 0.2);
+      const time = state.clock.elapsedTime;
+      
+      if (isMobile || isTablet) {
+        // Automatic gentle animation on mobile/tablet (no touch required)
+        groupRef.current.rotation.x = Math.sin(time * 0.2) * 0.1;
+        groupRef.current.rotation.y = time * 0.15; // Continuous rotation
+        
+        // Gentle floating motion
+        groupRef.current.position.y = position[1] + Math.sin(time * 0.4) * 0.04;
+        groupRef.current.position.x = position[0] + Math.sin(time * 0.3) * 0.02;
+      } else {
+        // Desktop: mouse follow + rotation
+        const sensitivity = 0.15;
+        targetRotation.current.x = mousePosition.y * sensitivity;
+        targetRotation.current.y = mousePosition.x * 0.2;
 
-      const lerpSpeed = isMobile ? 0.015 : 0.02;
-      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * lerpSpeed;
-      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * lerpSpeed;
-      
-      // Slow continuous rotation
-      groupRef.current.rotation.y += isMobile ? 0.0008 : 0.001;
-      
-      // Gentle floating motion (reduced on mobile)
-      const floatIntensity = isMobile ? 0.03 : 0.05;
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.3) * floatIntensity;
+        groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.02;
+        groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.02;
+        
+        // Slow continuous rotation
+        groupRef.current.rotation.y += 0.001;
+        
+        // Gentle floating motion
+        groupRef.current.position.y = position[1] + Math.sin(time * 0.3) * 0.05;
+      }
     }
   });
 

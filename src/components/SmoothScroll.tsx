@@ -75,8 +75,8 @@ export const ScrollContainer = ({ children }: ScrollContainerProps) => {
   return (
     <div 
       ref={containerRef}
-      className="snap-y snap-mandatory h-screen overflow-y-auto scroll-smooth"
-      style={{ scrollBehavior: 'smooth' }}
+      className="snap-y snap-mandatory h-screen overflow-y-auto overflow-x-hidden scroll-smooth touch-pan-y"
+      style={{ scrollBehavior: 'smooth', overscrollBehaviorX: 'none' }}
     >
       {children}
       
