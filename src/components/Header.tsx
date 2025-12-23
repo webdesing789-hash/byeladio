@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Magnetic } from './SmoothScroll';
+import FramedButton from './FramedButton';
 
 const Header = () => {
   return (
@@ -21,25 +22,25 @@ const Header = () => {
             <Magnetic key={item} strength={0.15}>
               <a 
                 href={`#${item.toLowerCase()}`} 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="group relative text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
                 data-cursor-hover
               >
-                {item}
+                <span className="relative z-10">{item}</span>
+                {/* Underline effect */}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
               </a>
             </Magnetic>
           ))}
         </div>
 
         <Magnetic strength={0.2}>
-          <a 
+          <FramedButton 
             href="https://www.instagram.com/orbit.bot/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="glass px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
-            data-cursor-hover
+            external
+            glowColor="hsl(260 80% 65%)"
           >
             Follow Us
-          </a>
+          </FramedButton>
         </Magnetic>
       </nav>
     </motion.header>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import MarqueeText from './Marquee';
 import { Magnetic } from './SmoothScroll';
+import FramedButton from './FramedButton';
 
 const Hero = () => {
   return (
@@ -12,11 +13,21 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          className="glass inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-muted-foreground mb-8"
+          className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-muted-foreground mb-8 cursor-default"
         >
-          <span className="text-green-400">✓</span> Trusted by 100+ businesses in the USA
-          <span className="mx-2">|</span>
-          <span className="text-yellow-400">⚡</span> Response time: Under 3 seconds
+          {/* Glass background with frame effect */}
+          <div className="absolute inset-0 glass-strong rounded-full border-2 border-border/50 transition-all duration-300 group-hover:border-foreground/40" />
+          {/* Corner accents */}
+          <span className="absolute -top-0.5 left-3 w-2 h-2 border-t-2 border-transparent group-hover:border-foreground/60 transition-all duration-300" />
+          <span className="absolute -top-0.5 right-3 w-2 h-2 border-t-2 border-transparent group-hover:border-foreground/60 transition-all duration-300" />
+          <span className="absolute -bottom-0.5 left-3 w-2 h-2 border-b-2 border-transparent group-hover:border-foreground/60 transition-all duration-300" />
+          <span className="absolute -bottom-0.5 right-3 w-2 h-2 border-b-2 border-transparent group-hover:border-foreground/60 transition-all duration-300" />
+          
+          <span className="relative z-10 flex items-center gap-2">
+            <span className="text-green-400">✓</span> Trusted by 100+ businesses in the USA
+            <span className="mx-2 text-border">|</span>
+            <span className="text-yellow-400">⚡</span> Response time: Under 3 seconds
+          </span>
         </motion.div>
         
         <motion.h1
@@ -43,7 +54,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          className="text-foreground/80 mb-8"
+          className="text-foreground/70 mb-8"
         >
           AI automation • Web & app development • Logo design • Voice agents
         </motion.p>
@@ -55,23 +66,21 @@ const Hero = () => {
           className="flex flex-col items-center gap-4"
         >
           <Magnetic strength={0.25}>
-            <a 
-              href="#features"
-              className="inline-flex items-center gap-2 glass px-6 py-3 rounded-full font-medium hover:glow-primary transition-all duration-300"
-              data-cursor-hover
-            >
-              See How It Works
-              <motion.svg 
-                className="w-4 h-4" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                animate={{ y: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </motion.svg>
-            </a>
+            <FramedButton href="#features" glowColor="hsl(260 80% 65%)">
+              <span className="flex items-center gap-2">
+                See How It Works
+                <motion.svg 
+                  className="w-4 h-4" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  animate={{ y: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </motion.svg>
+              </span>
+            </FramedButton>
           </Magnetic>
           <span className="text-sm text-muted-foreground">No sales pressure • Only real potential projects</span>
         </motion.div>

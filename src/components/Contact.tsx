@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import FramedCard from './FramedCard';
+import FramedButton from './FramedButton';
 
 const integrations = [
   "WhatsApp", "Stripe", "Google Calendar", "Shopify", "Instagram", 
@@ -44,65 +46,60 @@ const Contact = () => {
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 + i * 0.03, ease: [0.25, 0.1, 0.25, 1] }}
-              className="px-4 py-2 glass rounded-full text-sm text-foreground hover:bg-primary/20 transition-colors cursor-default"
+              whileHover={{ scale: 1.05, y: -2 }}
+              className="group relative px-4 py-2 rounded-full text-sm text-foreground cursor-default"
             >
-              {tool}
+              {/* Frame background */}
+              <div className="absolute inset-0 glass-strong rounded-full border border-border/50 transition-all duration-300 group-hover:border-foreground/40" />
+              {/* Glow on hover */}
+              <div className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-30 blur-md bg-primary transition-all duration-300" />
+              <span className="relative z-10">{tool}</span>
             </motion.span>
           ))}
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          className="glass rounded-2xl p-8 mb-12"
-        >
-          <h3 className="font-display text-2xl font-bold mb-4">
-            Ready to Automate Your Business?
-          </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            We don't take on every client. We prioritize businesses where automation will make a real impact. If your business handles repetitive customer inquiries, processes orders, or books appointments—we can help.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Ask any question directly to our team | Response within 24 hours | No sales pressure
-          </p>
-        </motion.div>
+        <FramedCard delay={0.4} glowColor="hsl(260 80% 65%)" className="mb-12">
+          <div className="p-8">
+            <h3 className="font-display text-2xl font-bold mb-4">
+              Ready to Automate Your Business?
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              We don't take on every client. We prioritize businesses where automation will make a real impact. If your business handles repetitive customer inquiries, processes orders, or books appointments—we can help.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Ask any question directly to our team | Response within 24 hours | No sales pressure
+            </p>
+          </div>
+        </FramedCard>
         
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-6"
+          transition={{ delay: 0.5 }}
+          className="flex flex-wrap items-center justify-center gap-4"
         >
-          <a
+          <FramedButton 
             href="https://wa.link/gpyd1p"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            data-cursor-hover
+            external
+            glowColor="hsl(142 70% 45%)"
           >
             WhatsApp
-          </a>
-          <a
+          </FramedButton>
+          <FramedButton 
             href="https://www.linkedin.com/company/orbita-ai/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            data-cursor-hover
+            external
+            glowColor="hsl(210 80% 55%)"
           >
             LinkedIn
-          </a>
-          <a
+          </FramedButton>
+          <FramedButton 
             href="https://www.instagram.com/orbit.bot/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            data-cursor-hover
+            external
+            glowColor="hsl(330 80% 55%)"
           >
             Instagram
-          </a>
+          </FramedButton>
         </motion.div>
       </div>
     </div>
