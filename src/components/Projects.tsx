@@ -160,8 +160,8 @@ const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const [maxX, setMaxX] = useState(0);
-  const [isAtEnd, setIsAtEnd] = useState(false);
-  const [isAtStart, setIsAtStart] = useState(true);
+  const scrollAttempts = useRef(0);
+  const lastScrollTime = useRef(0);
 
   useEffect(() => {
     const update = () => {
@@ -191,11 +191,6 @@ const Projects = () => {
       const maxScroll = el.scrollHeight - el.clientHeight;
       const p = maxScroll > 0 ? el.scrollTop / maxScroll : 0;
       xRaw.set(p * maxX);
-      
-      // Check if at end or start
-      const threshold = 20;
-      setIsAtEnd(el.scrollTop >= maxScroll - threshold);
-      setIsAtStart(el.scrollTop <= threshold);
     };
 
     updateX();
@@ -209,15 +204,23 @@ const Projects = () => {
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
       const maxScroll = el.scrollHeight - el.clientHeight;
-      const atTop = el.scrollTop <= 5;
-      const atBottom = el.scrollTop >= maxScroll - 5;
+      const atTop = el.scrollTop <= 2;
+      const atBottom = el.scrollTop >= maxScroll - 2;
 
-      // If scrolling down and at bottom, let parent scroll handle it
+      // Reset attempts if too much time passed
+      if (now - lastScrollTime.current > 300) {
+        scrollAttempts.current = 0;
+      }
+      lastScrollTime.current = now;
+
+      // If scrolling down and at bottom
       if (e.deltaY > 0 && atBottom) {
-        // Find the main scroll container and scroll to next section
-        const main = document.querySelector('main');
-        if (main) {
+        scrollAttempts.current++;
+        // Require 3 consecutive scroll attempts before navigating
+        if (scrollAttempts.current >= 3) {
+          scrollAttempts.current = 0;
           const contactSection = document.getElementById('contact');
           if (contactSection) {
             contactSection.scrollIntoView({ behavior: 'smooth' });
@@ -226,10 +229,11 @@ const Projects = () => {
         return;
       }
 
-      // If scrolling up and at top, let parent scroll handle it
+      // If scrolling up and at top
       if (e.deltaY < 0 && atTop) {
-        const main = document.querySelector('main');
-        if (main) {
+        scrollAttempts.current++;
+        if (scrollAttempts.current >= 3) {
+          scrollAttempts.current = 0;
           const experienceSection = document.getElementById('experience');
           if (experienceSection) {
             experienceSection.scrollIntoView({ behavior: 'smooth' });
@@ -237,6 +241,9 @@ const Projects = () => {
         }
         return;
       }
+
+      // Reset if not at boundary
+      scrollAttempts.current = 0;
     };
 
     el.addEventListener('wheel', handleWheel, { passive: true });
@@ -248,7 +255,7 @@ const Projects = () => {
       {/* Internal scroll area */}
       <div 
         ref={scrollAreaRef} 
-        className={`h-full w-full overflow-y-auto scroll-smooth ${isAtEnd || isAtStart ? '' : 'overscroll-contain'}`}
+        className="h-full w-full overflow-y-auto scroll-smooth overscroll-contain"
       >
         <div ref={containerRef} className="relative h-[300vh]">
           {/* Sticky container */}
