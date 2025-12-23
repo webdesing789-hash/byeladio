@@ -30,37 +30,37 @@ function EarthModel({ isMobile, isTablet }: { isMobile: boolean; isTablet: boole
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
 
-  // Responsive scale and position
+  // Responsive scale and position - larger on mobile for better visibility
   const scale = useMemo(() => {
-    if (isMobile) return 0.22;
-    if (isTablet) return 0.28;
+    if (isMobile) return 0.28; // Increased from 0.22
+    if (isTablet) return 0.32;
     return 0.35;
   }, [isMobile, isTablet]);
 
   const position = useMemo((): [number, number, number] => {
-    if (isMobile) return [0.3, 0.2, 0];
-    if (isTablet) return [0.2, 0.1, 0];
+    if (isMobile) return [0.15, 0.1, 0]; // More centered
+    if (isTablet) return [0.15, 0.05, 0];
     return [0, 0, 0];
   }, [isMobile, isTablet]);
 
-  // Enhance materials with mobile optimizations
+  // Enhance materials - HIGH QUALITY on all devices
   useEffect(() => {
     scene.traverse((child) => {
       if (child instanceof THREE.Points) {
         const material = child.material as THREE.PointsMaterial;
         material.transparent = true;
-        material.opacity = isMobile ? 0.7 : 0.9;
+        material.opacity = 1.0; // Full opacity for visibility
         material.sizeAttenuation = true;
         material.blending = THREE.AdditiveBlending;
-        // Reduce point size on mobile for performance
+        // Larger points on mobile for better visibility
         if (isMobile && material.size) {
-          material.size = material.size * 0.7;
+          material.size = material.size * 1.2; // Increased from 0.7
         }
       }
       if (child instanceof THREE.Mesh) {
         const material = child.material as THREE.MeshStandardMaterial;
         if (material.emissive) {
-          material.emissiveIntensity = isMobile ? 1.2 : 1.5;
+          material.emissiveIntensity = 2.0; // Higher glow
         }
       }
     });
@@ -126,10 +126,10 @@ function LoadingFallback() {
 const SpaceBackground = () => {
   const { isMobile, isTablet } = useIsMobile();
   
-  // Adjust camera settings for mobile
+  // Camera settings - closer on mobile for better detail
   const cameraSettings = useMemo((): { position: [number, number, number]; fov: number } => ({
-    position: isMobile ? [0, 0, 6] : [0, 0, 5],
-    fov: isMobile ? 55 : 50,
+    position: isMobile ? [0, 0, 4.5] : [0, 0, 5], // Closer camera on mobile
+    fov: isMobile ? 50 : 50,
   }), [isMobile]);
 
   return (
@@ -138,11 +138,11 @@ const SpaceBackground = () => {
       <Canvas
         camera={{ position: cameraSettings.position, fov: cameraSettings.fov }}
         gl={{ 
-          antialias: !isMobile, // Disable antialiasing on mobile for performance
+          antialias: true, // Enable antialiasing on all devices for quality
           alpha: true,
-          powerPreference: isMobile ? 'low-power' : 'high-performance',
+          powerPreference: 'high-performance', // Max quality
         }}
-        dpr={isMobile ? [1, 1.5] : [1, 2]} // Reduce pixel ratio on mobile
+        dpr={[1.5, 2]} // Higher pixel ratio for crisp visuals
         style={{ 
           background: 'transparent',
           position: 'absolute',
@@ -152,24 +152,23 @@ const SpaceBackground = () => {
           height: '100%',
         }}
       >
-        <ambientLight intensity={isMobile ? 0.3 : 0.2} />
-        <pointLight position={[10, 10, 10]} intensity={isMobile ? 0.8 : 1} color="#ffffff" />
-        {!isMobile && (
-          <pointLight position={[-10, -10, -10]} intensity={0.3} color="#a855f7" />
-        )}
+        <ambientLight intensity={0.4} />
+        <pointLight position={[10, 10, 10]} intensity={1.2} color="#ffffff" />
+        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#a855f7" />
+        <pointLight position={[0, 5, 5]} intensity={0.4} color="#60a5fa" />
         
         <Suspense fallback={<LoadingFallback />}>
           <EarthModel isMobile={isMobile} isTablet={isTablet} />
         </Suspense>
       </Canvas>
       
-      {/* Vignette for better text readability - adjusted for mobile */}
+      {/* Lighter vignette for better galaxy visibility */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
           background: isMobile 
-            ? 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.4) 40%, hsl(230 25% 5% / 0.85) 100%)'
-            : 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.3) 50%, hsl(230 25% 5% / 0.75) 100%)',
+            ? 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.2) 50%, hsl(230 25% 5% / 0.6) 100%)'
+            : 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.2) 55%, hsl(230 25% 5% / 0.65) 100%)',
         }}
       />
     </div>
