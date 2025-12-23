@@ -392,28 +392,19 @@ const Projects = () => {
 
         {/* Additional services */}
         <div className="mt-8">
-          <motion.h3
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="font-display text-xl font-bold text-gradient mb-4"
-          >
+          <h3 className="font-display text-xl font-bold text-gradient mb-4">
             Additional Services
-          </motion.h3>
+          </h3>
           <div className="flex flex-col gap-3">
             {additionalServices.map((service, i) => (
-              <motion.div 
+              <div 
                 key={i} 
                 className="glass rounded-xl p-4 border border-white/10"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
               >
                 <h4 className="font-display font-bold text-foreground mb-1">{service.name}</h4>
                 <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
                 <p className="text-muted-foreground text-xs">{service.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
