@@ -11,19 +11,20 @@ const Contact = () => {
     <div id="integrations" className="py-20 px-6 flex items-center justify-center min-h-screen">
       <div className="max-w-5xl mx-auto text-center w-full">
         <motion.h2
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           className="font-display text-4xl md:text-5xl font-bold mb-4"
         >
           Seamless Integration with 400+ Tools
         </motion.h2>
         
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
           className="text-muted-foreground text-lg mb-12 max-w-2xl mx-auto"
         >
           Orbita AI connects with your existing tech stack in days, not months. Built on n8n workflow automation.
@@ -32,17 +33,17 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="flex flex-wrap justify-center gap-3 mb-16"
         >
           {integrations.map((tool, i) => (
             <motion.span
               key={tool}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.03 }}
+              transition={{ duration: 0.5, delay: 0.3 + i * 0.03, ease: [0.25, 0.1, 0.25, 1] }}
               className="px-4 py-2 glass rounded-full text-sm text-foreground hover:bg-primary/20 transition-colors cursor-default"
             >
               {tool}
@@ -51,10 +52,10 @@ const Contact = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
           className="glass rounded-2xl p-8 mb-12"
         >
           <h3 className="font-display text-2xl font-bold mb-4">
