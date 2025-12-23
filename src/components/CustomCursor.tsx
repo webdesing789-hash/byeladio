@@ -64,7 +64,7 @@ const CustomCursor = () => {
     <>
       {/* Main cursor dot */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
         style={{
           x: cursorX,
           y: cursorY,
@@ -78,7 +78,10 @@ const CustomCursor = () => {
             opacity: isVisible ? 1 : 0,
           }}
           transition={{ duration: 0.2 }}
-          className="w-3 h-3 rounded-full bg-foreground"
+          className="w-4 h-4 rounded-full bg-primary"
+          style={{
+            boxShadow: '0 0 15px hsl(260 80% 60% / 0.8)',
+          }}
         />
       </motion.div>
 
@@ -94,13 +97,13 @@ const CustomCursor = () => {
       >
         <motion.div
           animate={{
-            scale: isHovering ? 1.5 : 1,
+            scale: isHovering ? 1.8 : 1,
             opacity: isVisible ? 1 : 0,
           }}
           transition={{ duration: 0.3 }}
-          className="w-10 h-10 rounded-full border-2 border-primary/60"
+          className="w-10 h-10 rounded-full border-2 border-primary bg-primary/20"
           style={{
-            boxShadow: isHovering ? '0 0 20px hsl(260 80% 60% / 0.5)' : 'none',
+            boxShadow: isHovering ? '0 0 30px hsl(260 80% 60% / 0.6)' : '0 0 10px hsl(260 80% 60% / 0.3)',
           }}
         />
       </motion.div>
@@ -151,10 +154,11 @@ const CursorTrail = ({ mousePosition, isVisible }: { mousePosition: { x: number;
           }}
         >
           <div 
-            className="rounded-full bg-primary/30"
+            className="rounded-full bg-primary"
             style={{
               width: 6 - index * 0.5,
               height: 6 - index * 0.5,
+              boxShadow: '0 0 8px hsl(260 80% 60% / 0.6)',
             }}
           />
         </motion.div>

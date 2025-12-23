@@ -9,9 +9,9 @@ const Hero = () => {
       
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="glass inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-muted-foreground mb-8"
         >
           <span className="text-green-400">✓</span> Trusted by 100+ businesses in the USA
@@ -20,9 +20,9 @@ const Hero = () => {
         </motion.div>
         
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
           className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
         >
           <span className="text-gradient">AI Solutions & Digital Services</span>
@@ -31,18 +31,18 @@ const Hero = () => {
         </motion.h1>
         
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           className="text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto mb-6"
         >
           From intelligent chatbots and voice agents to custom web development and branding—we deliver end-to-end digital solutions that automate, elevate, and scale your business 24/7.
         </motion.p>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           className="text-foreground/80 mb-8"
         >
           AI automation • Web & app development • Logo design • Voice agents
