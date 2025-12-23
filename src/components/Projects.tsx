@@ -16,7 +16,7 @@ const pricing = [
     ],
     popular: false,
     gradient: "from-blue-500/20 to-cyan-500/20",
-    borderColor: "hover:border-blue-500/50"
+    borderGradient: "from-blue-500 to-cyan-500"
   },
   {
     name: "Sofía",
@@ -33,7 +33,7 @@ const pricing = [
     ],
     popular: true,
     gradient: "from-primary/30 to-purple-500/20",
-    borderColor: "border-primary/50"
+    borderGradient: "from-primary to-purple-500"
   },
   {
     name: "Bertor",
@@ -50,133 +50,9 @@ const pricing = [
     ],
     popular: false,
     gradient: "from-orange-500/20 to-pink-500/20",
-    borderColor: "hover:border-orange-500/50"
+    borderGradient: "from-orange-500 to-pink-500"
   }
 ];
-
-const PricingCard = ({ plan, index }: { plan: typeof pricing[0]; index: number }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "center center"]
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.5, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [100, 50, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 0.9, 1]);
-  const rotateX = useTransform(scrollYProgress, [0, 1], [15, 0]);
-
-  return (
-    <motion.div
-      ref={cardRef}
-      style={{ opacity, y, scale, rotateX }}
-      className="perspective-1000"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ 
-          delay: index * 0.2, 
-          duration: 0.6,
-          ease: [0.25, 0.1, 0.25, 1]
-        }}
-        whileHover={{ 
-          scale: 1.02,
-          transition: { duration: 0.3 }
-        }}
-        className={`relative group glass rounded-2xl p-8 h-full border-2 border-transparent ${plan.borderColor} transition-all duration-500`}
-        data-cursor-hover
-      >
-        {/* Animated gradient border on hover */}
-        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${plan.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10`} />
-        
-        {/* Glow effect */}
-        <motion.div 
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-20"
-          style={{
-            boxShadow: plan.popular 
-              ? '0 0 60px hsl(260 80% 60% / 0.4), 0 0 100px hsl(260 80% 60% / 0.2)' 
-              : '0 0 40px hsl(260 80% 60% / 0.2)'
-          }}
-        />
-
-        {plan.popular && (
-          <motion.div 
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.2 + 0.3, type: "spring" }}
-            className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-primary rounded-full text-xs font-bold text-primary-foreground shadow-lg"
-            style={{
-              boxShadow: '0 0 20px hsl(260 80% 60% / 0.5)'
-            }}
-          >
-            Popular
-          </motion.div>
-        )}
-        
-        <motion.h3 
-          className="font-display text-3xl font-bold text-gradient mb-2"
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.2 + 0.1 }}
-        >
-          {plan.name}
-        </motion.h3>
-        
-        <p className="text-sm font-medium text-foreground mb-1">{plan.subtitle}</p>
-        <p className="text-xs text-muted-foreground mb-6">{plan.description}</p>
-        
-        <motion.div 
-          className="font-display text-2xl font-bold text-foreground mb-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.2 + 0.2 }}
-        >
-          {plan.price}
-        </motion.div>
-        
-        <ul className="space-y-3">
-          {plan.features.map((feature, j) => (
-            <motion.li 
-              key={j} 
-              className="flex items-start gap-3 text-sm text-muted-foreground"
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 + 0.1 + j * 0.05 }}
-            >
-              <motion.span 
-                className="text-primary mt-0.5 flex-shrink-0"
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 + 0.15 + j * 0.05, type: "spring" }}
-              >
-                ✓
-              </motion.span>
-              <span className="group-hover:text-foreground transition-colors duration-300">
-                {feature}
-              </span>
-            </motion.li>
-          ))}
-        </ul>
-
-        {/* Bottom accent line */}
-        <motion.div 
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
-          initial={{ width: 0, opacity: 0 }}
-          whileInView={{ width: "60%", opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.2 + 0.4, duration: 0.6 }}
-        />
-      </motion.div>
-    </motion.div>
-  );
-};
 
 const additionalServices = [
   { name: "Professional Logo Design", price: "Consultation", description: "Adobe Photoshop, After Effects, Multiple revisions" },
@@ -184,65 +60,200 @@ const additionalServices = [
   { name: "Social Media & Content", price: "From $200/month", description: "Viral content, Video editing, Growth optimization" },
 ];
 
-const Projects = () => {
+const PricingCard = ({ plan, index }: { plan: typeof pricing[0]; index: number }) => {
   return (
-    <div id="pricing" className="py-20 px-6 min-h-screen">
-      <div className="max-w-7xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
-          >
-            Custom AI Solutions for Every Business
-          </motion.h2>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-lg"
-          >
-            Choose the perfect AI assistant for your business type
-          </motion.p>
-        </motion.div>
+    <motion.div
+      initial={{ opacity: 0, y: 50, rotateY: 15 }}
+      whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ 
+        delay: index * 0.15, 
+        duration: 0.7,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      whileHover={{ 
+        scale: 1.03,
+        y: -10,
+        transition: { duration: 0.3 }
+      }}
+      className="relative group flex-shrink-0 w-[350px] md:w-[400px] perspective-1000"
+    >
+      {/* Animated border gradient */}
+      <div className={`absolute -inset-[2px] rounded-2xl bg-gradient-to-br ${plan.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm`} />
+      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-br ${plan.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+      
+      <div className={`relative glass rounded-2xl p-8 h-full border border-white/10 group-hover:border-transparent transition-all duration-500`}>
+        {/* Background gradient */}
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${plan.gradient} opacity-30 group-hover:opacity-60 transition-opacity duration-500`} />
         
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {pricing.map((plan, i) => (
-            <PricingCard key={i} plan={plan} index={i} />
-          ))}
+        {/* Glow effect */}
+        <motion.div 
+          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
+          style={{
+            boxShadow: plan.popular 
+              ? '0 0 80px hsl(260 80% 60% / 0.5), 0 0 120px hsl(260 80% 60% / 0.3)' 
+              : '0 0 60px hsl(var(--primary) / 0.3)'
+          }}
+        />
+
+        <div className="relative z-10">
+          {plan.popular && (
+            <motion.div 
+              initial={{ scale: 0, rotate: -12 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15 + 0.3, type: "spring", bounce: 0.5 }}
+              className="absolute -top-12 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-primary to-purple-500 rounded-full text-sm font-bold text-primary-foreground shadow-lg"
+              style={{
+                boxShadow: '0 0 30px hsl(260 80% 60% / 0.6)'
+              }}
+            >
+              ⭐ Most Popular
+            </motion.div>
+          )}
+          
+          <motion.h3 
+            className="font-display text-4xl font-bold text-gradient mb-3"
+          >
+            {plan.name}
+          </motion.h3>
+          
+          <p className="text-base font-medium text-foreground mb-2">{plan.subtitle}</p>
+          <p className="text-sm text-muted-foreground mb-8">{plan.description}</p>
+          
+          <div className="font-display text-3xl font-bold text-foreground mb-8">
+            {plan.price}
+          </div>
+          
+          <ul className="space-y-4">
+            {plan.features.map((feature, j) => (
+              <motion.li 
+                key={j} 
+                className="flex items-start gap-3 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-300"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 + j * 0.05 }}
+              >
+                <span className="text-primary mt-0.5 flex-shrink-0 text-lg">✓</span>
+                <span>{feature}</span>
+              </motion.li>
+            ))}
+          </ul>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ delay: 0.3 }}
-          className="grid md:grid-cols-3 gap-6"
-        >
-          {additionalServices.map((service, i) => (
-            <motion.div 
-              key={i} 
-              className="glass rounded-xl p-6 text-center border border-transparent hover:border-primary/30 transition-all duration-300"
+        {/* Bottom accent line */}
+        <motion.div 
+          className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${plan.borderGradient} rounded-full`}
+          initial={{ width: 0 }}
+          whileInView={{ width: "100%" }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.15 + 0.5, duration: 0.8 }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
+const Projects = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const horizontalRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  // Transform vertical scroll to horizontal movement
+  const x = useTransform(scrollYProgress, [0, 1], ["5%", "-60%"]);
+
+  return (
+    <div ref={containerRef} className="relative h-[300vh]" id="pricing">
+      {/* Sticky container */}
+      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+        {/* Header */}
+        <div className="px-6 mb-8 md:mb-12">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4 + i * 0.1 }}
-              whileHover={{ y: -5 }}
-              data-cursor-hover
             >
-              <h4 className="font-display font-bold text-foreground mb-2">{service.name}</h4>
-              <p className="text-primary font-medium text-sm mb-2">{service.price}</p>
-              <p className="text-muted-foreground text-xs">{service.description}</p>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+              >
+                Custom AI Solutions for Every Business
+              </motion.h2>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="text-muted-foreground text-lg max-w-xl"
+              >
+                Choose the perfect AI assistant for your business type — scroll to explore
+              </motion.p>
             </motion.div>
+          </div>
+        </div>
+
+        {/* Horizontal scrolling cards */}
+        <motion.div 
+          ref={horizontalRef}
+          style={{ x }}
+          className="flex gap-8 px-6 md:px-12 pb-8"
+        >
+          {pricing.map((plan, i) => (
+            <PricingCard key={i} plan={plan} index={i} />
           ))}
+          
+          {/* Additional services section inline */}
+          <div className="flex-shrink-0 flex flex-col gap-4 w-[350px] md:w-[400px] justify-center">
+            <motion.h3
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="font-display text-2xl font-bold text-gradient mb-2"
+            >
+              Additional Services
+            </motion.h3>
+            {additionalServices.map((service, i) => (
+              <motion.div 
+                key={i} 
+                className="glass rounded-xl p-5 border border-white/10 hover:border-primary/50 transition-all duration-300 group"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ scale: 1.02, x: 5 }}
+              >
+                <h4 className="font-display font-bold text-foreground mb-1 group-hover:text-gradient transition-all duration-300">{service.name}</h4>
+                <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
+                <p className="text-muted-foreground text-xs">{service.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll to explore</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2"
+          >
+            <motion.div className="w-1.5 h-1.5 rounded-full bg-primary" />
+          </motion.div>
         </motion.div>
       </div>
     </div>
