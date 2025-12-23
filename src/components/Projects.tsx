@@ -419,7 +419,7 @@ const Projects = () => {
         ref={scrollAreaRef} 
         className="h-full w-full overflow-y-auto scroll-smooth overscroll-contain"
       >
-        <div ref={containerRef} className="relative h-[400vh]">
+        <div ref={containerRef} className="relative h-[500vh]">
           <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
             {/* Header */}
             <div className="px-6 mb-8 md:mb-12">
