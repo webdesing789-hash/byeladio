@@ -365,6 +365,28 @@ const Projects = () => {
                 <PricingCard plan={plan} index={i} />
               </div>
             ))}
+            
+            {/* Additional Services como parte del scroll - obligatorio verlos */}
+            <div className="snap-center flex-shrink-0 w-[80vw] max-w-[320px]">
+              <div className="glass rounded-2xl p-6 border border-white/10 h-full">
+                <h3 className="font-display text-2xl font-bold text-gradient mb-4">
+                  Additional Services
+                </h3>
+                <div className="flex flex-col gap-3">
+                  {additionalServices.map((service, i) => (
+                    <div 
+                      key={i} 
+                      className="bg-white/5 rounded-xl p-4 border border-white/10"
+                    >
+                      <h4 className="font-display font-bold text-foreground mb-1 text-sm">{service.name}</h4>
+                      <p className="text-primary font-medium text-xs mb-1">{service.price}</p>
+                      <p className="text-muted-foreground text-xs">{service.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
             {/* Spacer al final */}
             <div className="flex-shrink-0 w-4" aria-hidden="true" />
           </div>
@@ -378,37 +400,18 @@ const Projects = () => {
           )}
         </div>
 
-        {/* Dot indicators */}
+        {/* Dot indicators - ahora incluye servicios adicionales */}
         <div className="flex justify-center gap-2 mt-4">
-          {pricing.map((_, i) => (
+          {[...pricing, { name: 'Services' }].map((_, i) => (
             <div 
               key={i}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
                 i === 0 && isAtStart ? 'bg-primary w-4' : 
-                i === pricing.length - 1 && isAtEnd ? 'bg-primary w-4' :
+                i === pricing.length && isAtEnd ? 'bg-primary w-4' :
                 'bg-muted-foreground/30'
               }`}
             />
           ))}
-        </div>
-
-        {/* Additional services */}
-        <div className="mt-8">
-          <h3 className="font-display text-xl font-bold text-gradient mb-4">
-            Additional Services
-          </h3>
-          <div className="flex flex-col gap-3">
-            {additionalServices.map((service, i) => (
-              <div 
-                key={i} 
-                className="glass rounded-xl p-4 border border-white/10"
-              >
-                <h4 className="font-display font-bold text-foreground mb-1">{service.name}</h4>
-                <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
-                <p className="text-muted-foreground text-xs">{service.description}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
     );
