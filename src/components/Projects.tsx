@@ -218,12 +218,13 @@ const Projects = () => {
       // If scrolling down and at bottom
       if (e.deltaY > 0 && atBottom) {
         scrollAttempts.current++;
-        // Require 3 consecutive scroll attempts before navigating
-        if (scrollAttempts.current >= 3) {
+        // Require 2 consecutive scroll attempts before navigating
+        if (scrollAttempts.current >= 2) {
           scrollAttempts.current = 0;
           const contactSection = document.getElementById('contact');
           if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth' });
+            // Smooth scroll with custom easing via scrollIntoView
+            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
         return;
@@ -232,11 +233,11 @@ const Projects = () => {
       // If scrolling up and at top
       if (e.deltaY < 0 && atTop) {
         scrollAttempts.current++;
-        if (scrollAttempts.current >= 3) {
+        if (scrollAttempts.current >= 2) {
           scrollAttempts.current = 0;
           const experienceSection = document.getElementById('experience');
           if (experienceSection) {
-            experienceSection.scrollIntoView({ behavior: 'smooth' });
+            experienceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
         return;
