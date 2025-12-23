@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useScrollContainer } from '@/pages/Index';
 
 const pricing = [
   {
@@ -158,9 +159,11 @@ const PricingCard = ({ plan, index }: { plan: typeof pricing[0]; index: number }
 const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
+  const scrollContainer = useScrollContainer();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
+    container: scrollContainer || undefined,
     offset: ["start start", "end end"]
   });
 

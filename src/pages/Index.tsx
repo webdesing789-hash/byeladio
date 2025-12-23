@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, createContext, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import SpaceBackground from "@/components/SpaceBackground";
 import Header from "@/components/Header";
@@ -12,8 +12,13 @@ import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import LoadingScreen from "@/components/LoadingScreen";
 
+// Context to share scroll container ref
+export const ScrollContainerContext = createContext<React.RefObject<HTMLElement> | null>(null);
+export const useScrollContainer = () => useContext(ScrollContainerContext);
+
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const mainRef = useRef<HTMLElement>(null);
 
   return (
     <div className="relative cursor-none">
@@ -24,12 +29,15 @@ const Index = () => {
       </AnimatePresence>
 
       {!isLoading && (
-        <>
+        <ScrollContainerContext.Provider value={mainRef}>
           <CustomCursor />
           <SpaceBackground />
           <Header />
           
-          <main className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth">
+          <main 
+            ref={mainRef}
+            className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth"
+          >
             <section id="hero" className="min-h-screen snap-start snap-always flex items-center justify-center">
               <Hero />
             </section>
@@ -46,7 +54,7 @@ const Index = () => {
               <Experience />
             </section>
             
-            <section id="work" className="min-h-screen snap-start snap-always">
+            <section id="work" className="snap-start snap-always">
               <Projects />
             </section>
             
@@ -58,7 +66,7 @@ const Index = () => {
               <Footer />
             </section>
           </main>
-        </>
+        </ScrollContainerContext.Provider>
       )}
     </div>
   );
