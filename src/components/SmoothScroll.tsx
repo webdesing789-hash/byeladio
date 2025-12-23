@@ -1,22 +1,108 @@
-import { useEffect, useRef, ReactNode } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { useRef, useEffect, useState, ReactNode } from 'react';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 
-interface SmoothScrollProps {
+interface ScrollSectionProps {
+  children: ReactNode;
+  id?: string;
+  className?: string;
+}
+
+export const ScrollSection = ({ children, id, className = '' }: ScrollSectionProps) => {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [100, 0, 0, -100]);
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.9, 1, 1, 0.9]);
+
+  const smoothOpacity = useSpring(opacity, { damping: 30, stiffness: 100 });
+  const smoothY = useSpring(y, { damping: 30, stiffness: 100 });
+  const smoothScale = useSpring(scale, { damping: 30, stiffness: 100 });
+
+  return (
+    <motion.section
+      ref={ref}
+      id={id}
+      style={{
+        opacity: smoothOpacity,
+        y: smoothY,
+        scale: smoothScale,
+      }}
+      className={`min-h-screen snap-start snap-always flex flex-col justify-center ${className}`}
+    >
+      {children}
+    </motion.section>
+  );
+};
+
+interface ScrollContainerProps {
   children: ReactNode;
 }
 
-const SmoothScroll = ({ children }: SmoothScrollProps) => {
+export const ScrollContainer = ({ children }: ScrollContainerProps) => {
+  const [activeSection, setActiveSection] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll();
-  
-  const smoothProgress = useSpring(scrollYProgress, {
-    damping: 50,
-    stiffness: 400,
-  });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const sections = container.querySelectorAll('section');
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const index = Array.from(sections).indexOf(entry.target as HTMLElement);
+            setActiveSection(index);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.5,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div ref={containerRef}>
+    <div 
+      ref={containerRef}
+      className="snap-y snap-mandatory h-screen overflow-y-auto scroll-smooth"
+      style={{ scrollBehavior: 'smooth' }}
+    >
       {children}
+      
+      {/* Section indicators */}
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <motion.button
+            key={i}
+            onClick={() => {
+              const sections = containerRef.current?.querySelectorAll('section');
+              sections?.[i]?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="group relative flex items-center justify-end"
+            whileHover={{ scale: 1.2 }}
+          >
+            <motion.div
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                activeSection === i 
+                  ? 'bg-primary w-8' 
+                  : 'bg-muted-foreground/30 hover:bg-muted-foreground/60'
+              }`}
+              layout
+            />
+          </motion.button>
+        ))}
+      </div>
     </div>
   );
 };
@@ -100,4 +186,4 @@ export const Magnetic = ({ children, className = '', strength = 0.3 }: MagneticP
   );
 };
 
-export default SmoothScroll;
+export default ScrollContainer;

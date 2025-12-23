@@ -10,8 +10,8 @@ const socialLinks = [
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto text-center">
+    <div className="py-20 px-6 flex items-center justify-center min-h-screen">
+      <div className="max-w-4xl mx-auto text-center w-full">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -71,7 +71,7 @@ const Contact = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
 
