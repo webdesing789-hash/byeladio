@@ -155,6 +155,62 @@ const PricingCard = ({ plan, index }: { plan: typeof pricing[0]; index: number }
   );
 };
 
+// Hook para manejar scroll horizontal con detección de bordes
+const useHorizontalScroll = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+
+    let startX = 0;
+    let startY = 0;
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = element;
+      setIsAtStart(scrollLeft <= 5);
+      setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 5);
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].pageX;
+      startY = e.touches[0].pageY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const currentX = e.touches[0].pageX;
+      const currentY = e.touches[0].pageY;
+      const diffX = Math.abs(currentX - startX);
+      const diffY = Math.abs(currentY - startY);
+
+      const { scrollLeft, scrollWidth, clientWidth } = element;
+      const isAtStartEdge = scrollLeft <= 0;
+      const isAtEndEdge = scrollLeft + clientWidth >= scrollWidth;
+
+      // Solo prevenir scroll vertical si está scrolleando horizontalmente Y NO está en los extremos
+      if (diffX > diffY && !isAtStartEdge && !isAtEndEdge) {
+        e.preventDefault();
+      }
+    };
+
+    element.addEventListener('scroll', handleScroll, { passive: true });
+    element.addEventListener('touchstart', onTouchStart, { passive: true });
+    element.addEventListener('touchmove', onTouchMove, { passive: false });
+
+    handleScroll();
+
+    return () => {
+      element.removeEventListener('scroll', handleScroll);
+      element.removeEventListener('touchstart', onTouchStart);
+      element.removeEventListener('touchmove', onTouchMove);
+    };
+  }, []);
+
+  return { scrollRef, isAtStart, isAtEnd };
+};
+
 const Projects = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -163,6 +219,9 @@ const Projects = () => {
   const [isMobile, setIsMobile] = useState(false);
   const scrollAttempts = useRef(0);
   const lastScrollTime = useRef(0);
+  
+  // Hook para scroll horizontal móvil
+  const { scrollRef: mobileScrollRef, isAtStart, isAtEnd } = useHorizontalScroll();
 
   // Detect mobile
   useEffect(() => {
@@ -173,7 +232,7 @@ const Projects = () => {
   }, []);
 
   useEffect(() => {
-    if (isMobile) return; // Skip calculation on mobile
+    if (isMobile) return;
     
     const update = () => {
       const track = horizontalRef.current;
@@ -195,7 +254,7 @@ const Projects = () => {
   const x = useSpring(xRaw, { damping: 30, stiffness: 240, mass: 0.8 });
 
   useEffect(() => {
-    if (isMobile) return; // Skip on mobile
+    if (isMobile) return;
     
     const el = scrollAreaRef.current;
     if (!el) return;
@@ -211,7 +270,7 @@ const Projects = () => {
     return () => el.removeEventListener('scroll', updateX);
   }, [maxX, xRaw, isMobile]);
 
-  // Handle wheel events to allow scrolling to next/prev section when at boundaries (desktop only)
+  // Handle wheel events for desktop
   useEffect(() => {
     if (isMobile) return;
     
@@ -260,10 +319,10 @@ const Projects = () => {
     return () => el.removeEventListener('wheel', handleWheel);
   }, [isMobile]);
 
-  // Mobile layout - simple vertical scroll with horizontal card slider
+  // Mobile layout
   if (isMobile) {
     return (
-      <div className="min-h-screen w-full py-16 px-4" id="pricing">
+      <section className="w-full py-16 px-4" id="pricing" style={{ overscrollBehavior: 'auto' }}>
         {/* Header */}
         <div className="mb-8">
           <motion.h2
@@ -285,19 +344,49 @@ const Projects = () => {
           </motion.p>
         </div>
 
-        {/* Horizontal scrolling cards - native touch scroll */}
-        <div 
-          className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide touch-pan-x"
-          style={{ 
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}
-        >
-          {pricing.map((plan, i) => (
-            <div key={i} className="snap-center flex-shrink-0 w-[85vw] max-w-[350px]">
-              <PricingCard plan={plan} index={i} />
-            </div>
+        {/* Horizontal scrolling cards con detección de bordes */}
+        <div className="relative">
+          <div 
+            ref={mobileScrollRef}
+            className="flex gap-4 pb-4 overflow-x-auto overflow-y-hidden snap-x snap-mandatory"
+            style={{ 
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              overscrollBehaviorX: 'contain',
+              overscrollBehaviorY: 'auto',
+              touchAction: 'pan-x pan-y'
+            }}
+          >
+            {pricing.map((plan, i) => (
+              <div key={i} className="snap-start flex-shrink-0 w-[85vw] max-w-[350px] first:ml-0">
+                <PricingCard plan={plan} index={i} />
+              </div>
+            ))}
+            {/* Spacer al final */}
+            <div className="flex-shrink-0 w-4" aria-hidden="true" />
+          </div>
+          
+          {/* Indicadores de scroll */}
+          {!isAtStart && (
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-full bg-gradient-to-r from-background/80 to-transparent pointer-events-none" />
+          )}
+          {!isAtEnd && (
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-full bg-gradient-to-l from-background/80 to-transparent pointer-events-none" />
+          )}
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex justify-center gap-2 mt-4">
+          {pricing.map((_, i) => (
+            <div 
+              key={i}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === 0 && isAtStart ? 'bg-primary w-4' : 
+                i === pricing.length - 1 && isAtEnd ? 'bg-primary w-4' :
+                'bg-muted-foreground/30'
+              }`}
+            />
           ))}
         </div>
 
@@ -328,7 +417,7 @@ const Projects = () => {
             ))}
           </div>
         </div>
-      </div>
+      </section>
     );
   }
 
