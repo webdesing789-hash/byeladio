@@ -17,7 +17,7 @@ const SatelliteModel = () => {
   });
 
   return (
-    <group ref={groupRef} scale={1.2} position={[0, 0, 0]}>
+    <group ref={groupRef} scale={2} position={[0, 0, 0]} rotation={[0.3, 0, 0]}>
       <primitive object={scene} />
     </group>
   );
@@ -25,9 +25,9 @@ const SatelliteModel = () => {
 
 const FooterSatellite = () => {
   return (
-    <div className="absolute right-4 md:right-12 bottom-0 w-24 h-24 md:w-32 md:h-32 pointer-events-none">
+    <div className="absolute right-4 md:right-12 bottom-2 w-20 h-20 md:w-28 md:h-28 pointer-events-none z-10">
       <Canvas
-        camera={{ position: [0, 0, 3], fov: 45 }}
+        camera={{ position: [0, 0, 4], fov: 50 }}
         gl={{ alpha: true, antialias: true }}
         style={{ background: 'transparent' }}
       >
