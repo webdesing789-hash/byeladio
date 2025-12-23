@@ -178,19 +178,28 @@ const Projects = () => {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    container: scrollAreaRef,
-    offset: ["start start", "end end"],
-  });
+  const xRaw = useMotionValue(0);
+  const x = useSpring(xRaw, { damping: 30, stiffness: 240, mass: 0.8 });
 
-  // Transform vertical scroll to horizontal movement
-  const x = useTransform(scrollYProgress, (v) => v * maxX);
+  useEffect(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+
+    const updateX = () => {
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      const p = maxScroll > 0 ? el.scrollTop / maxScroll : 0;
+      xRaw.set(p * maxX);
+    };
+
+    updateX();
+    el.addEventListener('scroll', updateX, { passive: true });
+    return () => el.removeEventListener('scroll', updateX);
+  }, [maxX, xRaw]);
 
   return (
     <div className="h-screen w-full" id="pricing">
       {/* Internal scroll area (so snap-scroll in the main page doesn't block this interaction) */}
-      <div ref={scrollAreaRef} className="h-full w-full overflow-y-auto scroll-smooth">
+      <div ref={scrollAreaRef} className="h-full w-full overflow-y-auto scroll-smooth overscroll-contain">
         <div ref={containerRef} className="relative h-[300vh]">
           {/* Sticky container */}
           <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
@@ -260,6 +269,9 @@ const Projects = () => {
                   </motion.div>
                 ))}
               </div>
+
+              {/* Spacer to ensure horizontal travel even on wide screens */}
+              <div className="flex-shrink-0 w-[30vw]" aria-hidden="true" />
             </motion.div>
 
             {/* Scroll indicator */}
