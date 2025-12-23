@@ -160,6 +160,8 @@ const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const [maxX, setMaxX] = useState(0);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const [isAtStart, setIsAtStart] = useState(true);
 
   useEffect(() => {
     const update = () => {
@@ -189,6 +191,11 @@ const Projects = () => {
       const maxScroll = el.scrollHeight - el.clientHeight;
       const p = maxScroll > 0 ? el.scrollTop / maxScroll : 0;
       xRaw.set(p * maxX);
+      
+      // Check if at end or start
+      const threshold = 20;
+      setIsAtEnd(el.scrollTop >= maxScroll - threshold);
+      setIsAtStart(el.scrollTop <= threshold);
     };
 
     updateX();
@@ -196,10 +203,53 @@ const Projects = () => {
     return () => el.removeEventListener('scroll', updateX);
   }, [maxX, xRaw]);
 
+  // Handle wheel events to allow scrolling to next/prev section when at boundaries
+  useEffect(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      const atTop = el.scrollTop <= 5;
+      const atBottom = el.scrollTop >= maxScroll - 5;
+
+      // If scrolling down and at bottom, let parent scroll handle it
+      if (e.deltaY > 0 && atBottom) {
+        // Find the main scroll container and scroll to next section
+        const main = document.querySelector('main');
+        if (main) {
+          const contactSection = document.getElementById('contact');
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+        return;
+      }
+
+      // If scrolling up and at top, let parent scroll handle it
+      if (e.deltaY < 0 && atTop) {
+        const main = document.querySelector('main');
+        if (main) {
+          const experienceSection = document.getElementById('experience');
+          if (experienceSection) {
+            experienceSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+        return;
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: true });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, []);
+
   return (
     <div className="h-screen w-full" id="pricing">
-      {/* Internal scroll area (so snap-scroll in the main page doesn't block this interaction) */}
-      <div ref={scrollAreaRef} className="h-full w-full overflow-y-auto scroll-smooth overscroll-contain">
+      {/* Internal scroll area */}
+      <div 
+        ref={scrollAreaRef} 
+        className={`h-full w-full overflow-y-auto scroll-smooth ${isAtEnd || isAtStart ? '' : 'overscroll-contain'}`}
+      >
         <div ref={containerRef} className="relative h-[300vh]">
           {/* Sticky container */}
           <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
