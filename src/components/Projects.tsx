@@ -218,12 +218,10 @@ const Projects = () => {
       // If scrolling down and at bottom
       if (e.deltaY > 0 && atBottom) {
         scrollAttempts.current++;
-        // Require 2 consecutive scroll attempts before navigating
         if (scrollAttempts.current >= 2) {
           scrollAttempts.current = 0;
           const contactSection = document.getElementById('contact');
           if (contactSection) {
-            // Smooth scroll with custom easing via scrollIntoView
             contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
@@ -235,9 +233,9 @@ const Projects = () => {
         scrollAttempts.current++;
         if (scrollAttempts.current >= 2) {
           scrollAttempts.current = 0;
-          const experienceSection = document.getElementById('experience');
-          if (experienceSection) {
-            experienceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const aboutSection = document.getElementById('about');
+          if (aboutSection) {
+            aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
         return;
