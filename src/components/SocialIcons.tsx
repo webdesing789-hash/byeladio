@@ -1,24 +1,27 @@
 import { motion } from 'framer-motion';
 import { MessageCircle, Linkedin, Instagram } from 'lucide-react';
 
+// Orbita AI brand color - coral/pink
+const orbitaColor = '#FF6B6B';
+
 const socialLinks = [
   {
     name: 'WhatsApp',
     icon: MessageCircle,
     href: 'https://wa.link/gpyd1p',
-    color: '#25D366'
+    color: orbitaColor
   },
   {
     name: 'LinkedIn',
     icon: Linkedin,
     href: 'https://www.linkedin.com/company/orbita-ai/',
-    color: '#0A66C2'
+    color: orbitaColor
   },
   {
     name: 'Instagram',
     icon: Instagram,
     href: 'https://www.instagram.com/orbit.bot/',
-    color: '#E4405F'
+    color: orbitaColor
   }
 ];
 
