@@ -160,10 +160,21 @@ const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const [maxX, setMaxX] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const scrollAttempts = useRef(0);
   const lastScrollTime = useRef(0);
 
+  // Detect mobile
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return; // Skip calculation on mobile
+    
     const update = () => {
       const track = horizontalRef.current;
       const viewportEl = scrollAreaRef.current;
@@ -178,12 +189,14 @@ const Projects = () => {
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, []);
+  }, [isMobile]);
 
   const xRaw = useMotionValue(0);
   const x = useSpring(xRaw, { damping: 30, stiffness: 240, mass: 0.8 });
 
   useEffect(() => {
+    if (isMobile) return; // Skip on mobile
+    
     const el = scrollAreaRef.current;
     if (!el) return;
 
@@ -196,10 +209,12 @@ const Projects = () => {
     updateX();
     el.addEventListener('scroll', updateX, { passive: true });
     return () => el.removeEventListener('scroll', updateX);
-  }, [maxX, xRaw]);
+  }, [maxX, xRaw, isMobile]);
 
-  // Handle wheel events to allow scrolling to next/prev section when at boundaries
+  // Handle wheel events to allow scrolling to next/prev section when at boundaries (desktop only)
   useEffect(() => {
+    if (isMobile) return;
+    
     const el = scrollAreaRef.current;
     if (!el) return;
 
@@ -209,13 +224,11 @@ const Projects = () => {
       const atTop = el.scrollTop <= 2;
       const atBottom = el.scrollTop >= maxScroll - 2;
 
-      // Reset attempts if too much time passed
       if (now - lastScrollTime.current > 300) {
         scrollAttempts.current = 0;
       }
       lastScrollTime.current = now;
 
-      // If scrolling down and at bottom
       if (e.deltaY > 0 && atBottom) {
         scrollAttempts.current++;
         if (scrollAttempts.current >= 2) {
@@ -228,7 +241,6 @@ const Projects = () => {
         return;
       }
 
-      // If scrolling up and at top
       if (e.deltaY < 0 && atTop) {
         scrollAttempts.current++;
         if (scrollAttempts.current >= 2) {
@@ -241,23 +253,93 @@ const Projects = () => {
         return;
       }
 
-      // Reset if not at boundary
       scrollAttempts.current = 0;
     };
 
     el.addEventListener('wheel', handleWheel, { passive: true });
     return () => el.removeEventListener('wheel', handleWheel);
-  }, []);
+  }, [isMobile]);
 
+  // Mobile layout - simple vertical scroll with horizontal card slider
+  if (isMobile) {
+    return (
+      <div className="min-h-screen w-full py-16 px-4" id="pricing">
+        {/* Header */}
+        <div className="mb-8">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display text-3xl font-bold mb-3"
+          >
+            Custom AI Solutions for Every Business
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-muted-foreground text-base"
+          >
+            Swipe to explore our AI assistants
+          </motion.p>
+        </div>
+
+        {/* Horizontal scrolling cards - native touch scroll */}
+        <div 
+          className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide touch-pan-x"
+          style={{ 
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
+          {pricing.map((plan, i) => (
+            <div key={i} className="snap-center flex-shrink-0 w-[85vw] max-w-[350px]">
+              <PricingCard plan={plan} index={i} />
+            </div>
+          ))}
+        </div>
+
+        {/* Additional services */}
+        <div className="mt-8">
+          <motion.h3
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="font-display text-xl font-bold text-gradient mb-4"
+          >
+            Additional Services
+          </motion.h3>
+          <div className="flex flex-col gap-3">
+            {additionalServices.map((service, i) => (
+              <motion.div 
+                key={i} 
+                className="glass rounded-xl p-4 border border-white/10"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <h4 className="font-display font-bold text-foreground mb-1">{service.name}</h4>
+                <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
+                <p className="text-muted-foreground text-xs">{service.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop layout - horizontal parallax scroll
   return (
     <div className="h-screen w-full" id="pricing">
-      {/* Internal scroll area */}
       <div 
         ref={scrollAreaRef} 
         className="h-full w-full overflow-y-auto scroll-smooth overscroll-contain"
       >
         <div ref={containerRef} className="relative h-[300vh]">
-          {/* Sticky container */}
           <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
             {/* Header */}
             <div className="px-6 mb-8 md:mb-12">
@@ -326,7 +408,6 @@ const Projects = () => {
                 ))}
               </div>
 
-              {/* Spacer to ensure horizontal travel even on wide screens */}
               <div className="flex-shrink-0 w-[30vw]" aria-hidden="true" />
             </motion.div>
 
