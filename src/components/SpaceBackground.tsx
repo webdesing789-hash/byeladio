@@ -1,14 +1,35 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, Center } from '@react-three/drei';
-import { useRef, Suspense, useEffect, useState } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
 
-function SpaceModel() {
-  const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF('/models/need_some_space.glb');
+function GalaxyPoints() {
+  const pointsRef = useRef<THREE.Points>(null);
+  const geometry = useLoader(PLYLoader, '/models/galaxy.ply');
   
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
+
+  // Create point material with custom shader for glow effect
+  const material = useMemo(() => {
+    return new THREE.PointsMaterial({
+      size: 0.8,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
+    });
+  }, []);
+
+  // Center and scale the geometry
+  useEffect(() => {
+    if (geometry) {
+      geometry.computeBoundingBox();
+      geometry.center();
+      geometry.scale(0.015, 0.015, 0.015);
+    }
+  }, [geometry]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -22,23 +43,25 @@ function SpaceModel() {
   }, []);
 
   useFrame((state) => {
-    if (groupRef.current) {
-      targetRotation.current.x = mousePosition.y * 0.15;
-      targetRotation.current.y = mousePosition.x * 0.25;
+    if (pointsRef.current) {
+      // Smooth mouse follow
+      targetRotation.current.x = mousePosition.y * 0.1;
+      targetRotation.current.y = mousePosition.x * 0.15;
 
-      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.03;
-      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.03;
-      groupRef.current.rotation.y += 0.0003;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
+      pointsRef.current.rotation.x += (targetRotation.current.x - pointsRef.current.rotation.x) * 0.02;
+      pointsRef.current.rotation.y += (targetRotation.current.y - pointsRef.current.rotation.y) * 0.02;
+      
+      // Slow continuous rotation
+      pointsRef.current.rotation.y += 0.0005;
+      pointsRef.current.rotation.z += 0.0002;
+      
+      // Gentle floating motion
+      pointsRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.1;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      <Center>
-        <primitive object={scene} scale={4} />
-      </Center>
-    </group>
+    <points ref={pointsRef} geometry={geometry} material={material} />
   );
 }
 
@@ -51,7 +74,7 @@ const SpaceBackground = () => {
     <div className="fixed inset-0 -z-10">
       <div className="absolute inset-0 bg-cosmic" />
       <Canvas
-        camera={{ position: [0, 0, 12], fov: 50 }}
+        camera={{ position: [0, 0, 5], fov: 60 }}
         gl={{ antialias: true, alpha: true }}
         style={{ 
           background: 'transparent',
@@ -60,23 +83,18 @@ const SpaceBackground = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          opacity: 0.4,
         }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[5, 5, 5]} intensity={0.6} color="#a855f7" />
-        <pointLight position={[-5, -5, -5]} intensity={0.3} color="#4a9eff" />
-        
         <Suspense fallback={<LoadingFallback />}>
-          <SpaceModel />
+          <GalaxyPoints />
         </Suspense>
       </Canvas>
       
-      {/* Stronger vignette for better text readability */}
+      {/* Vignette for better text readability */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.5) 50%, hsl(230 25% 5% / 0.85) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 0%, hsl(230 25% 5% / 0.4) 50%, hsl(230 25% 5% / 0.8) 100%)',
         }}
       />
     </div>
