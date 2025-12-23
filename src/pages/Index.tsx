@@ -11,13 +11,12 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import LoadingScreen from "@/components/LoadingScreen";
-import { ScrollContainer, ScrollSection } from "@/components/SmoothScroll";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="relative min-h-screen overflow-hidden cursor-none">
+    <div className="relative min-h-screen cursor-none">
       <AnimatePresence>
         {isLoading && (
           <LoadingScreen onComplete={() => setIsLoading(false)} />
@@ -30,35 +29,33 @@ const Index = () => {
           <SpaceBackground />
           <Header />
           
-          <ScrollContainer>
-            <ScrollSection id="hero">
+          <main className="relative z-10">
+            <section id="hero" className="min-h-screen flex items-center justify-center">
               <Hero />
-            </ScrollSection>
-            
-            <ScrollSection id="about">
-              <About />
-            </ScrollSection>
-            
-            <ScrollSection id="skills">
-              <Skills />
-            </ScrollSection>
-            
-            <ScrollSection id="experience">
-              <Experience />
-            </ScrollSection>
-            
-            <ScrollSection id="work">
-              <Projects />
-            </ScrollSection>
-            
-            <ScrollSection id="contact">
-              <Contact />
-            </ScrollSection>
-            
-            <section className="snap-start">
-              <Footer />
             </section>
-          </ScrollContainer>
+            
+            <section id="about">
+              <About />
+            </section>
+            
+            <section id="skills">
+              <Skills />
+            </section>
+            
+            <section id="experience">
+              <Experience />
+            </section>
+            
+            <section id="work">
+              <Projects />
+            </section>
+            
+            <section id="contact">
+              <Contact />
+            </section>
+            
+            <Footer />
+          </main>
         </>
       )}
     </div>
