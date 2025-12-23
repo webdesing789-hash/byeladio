@@ -1,6 +1,5 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
-import { useScrollContainer } from '@/pages/Index';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 const pricing = [
   {
@@ -157,107 +156,130 @@ const PricingCard = ({ plan, index }: { plan: typeof pricing[0]; index: number }
 };
 
 const Projects = () => {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
-  const scrollContainer = useScrollContainer();
+  const [maxX, setMaxX] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      const track = horizontalRef.current;
+      const viewportEl = scrollAreaRef.current;
+      if (!track || !viewportEl) return;
+
+      const viewportWidth = viewportEl.clientWidth;
+      const totalWidth = track.scrollWidth;
+      const max = Math.min(0, viewportWidth - totalWidth);
+      setMaxX(max);
+    };
+
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    container: scrollContainer || undefined,
-    offset: ["start start", "end end"]
+    container: scrollAreaRef,
+    offset: ["start start", "end end"],
   });
 
   // Transform vertical scroll to horizontal movement
-  const x = useTransform(scrollYProgress, [0, 1], ["5%", "-60%"]);
+  const x = useTransform(scrollYProgress, (v) => v * maxX);
 
   return (
-    <div ref={containerRef} className="relative h-[300vh]" id="pricing">
-      {/* Sticky container */}
-      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-        {/* Header */}
-        <div className="px-6 mb-8 md:mb-12">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+    <div className="h-screen w-full" id="pricing">
+      {/* Internal scroll area (so snap-scroll in the main page doesn't block this interaction) */}
+      <div ref={scrollAreaRef} className="h-full w-full overflow-y-auto scroll-smooth">
+        <div ref={containerRef} className="relative h-[300vh]">
+          {/* Sticky container */}
+          <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+            {/* Header */}
+            <div className="px-6 mb-8 md:mb-12">
+              <div className="max-w-7xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+                  >
+                    Custom AI Solutions for Every Business
+                  </motion.h2>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 }}
+                    className="text-muted-foreground text-lg max-w-xl"
+                  >
+                    Choose the perfect AI assistant for your business type — scroll to explore
+                  </motion.p>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Horizontal scrolling cards */}
+            <motion.div 
+              ref={horizontalRef}
+              style={{ x }}
+              className="flex gap-8 px-6 md:px-12 pb-8"
             >
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
-              >
-                Custom AI Solutions for Every Business
-              </motion.h2>
+              {pricing.map((plan, i) => (
+                <PricingCard key={i} plan={plan} index={i} />
+              ))}
               
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-muted-foreground text-lg max-w-xl"
+              {/* Additional services section inline */}
+              <div className="flex-shrink-0 flex flex-col gap-4 w-[350px] md:w-[400px] justify-center">
+                <motion.h3
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="font-display text-2xl font-bold text-gradient mb-2"
+                >
+                  Additional Services
+                </motion.h3>
+                {additionalServices.map((service, i) => (
+                  <motion.div 
+                    key={i} 
+                    className="glass rounded-xl p-5 border border-white/10 hover:border-primary/50 transition-all duration-300 group"
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                  >
+                    <h4 className="font-display font-bold text-foreground mb-1 group-hover:text-gradient transition-all duration-300">{service.name}</h4>
+                    <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
+                    <p className="text-muted-foreground text-xs">{service.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Scroll indicator */}
+            <motion.div 
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
+              <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll to explore</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2"
               >
-                Choose the perfect AI assistant for your business type — scroll to explore
-              </motion.p>
+                <motion.div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </motion.div>
             </motion.div>
           </div>
         </div>
-
-        {/* Horizontal scrolling cards */}
-        <motion.div 
-          ref={horizontalRef}
-          style={{ x }}
-          className="flex gap-8 px-6 md:px-12 pb-8"
-        >
-          {pricing.map((plan, i) => (
-            <PricingCard key={i} plan={plan} index={i} />
-          ))}
-          
-          {/* Additional services section inline */}
-          <div className="flex-shrink-0 flex flex-col gap-4 w-[350px] md:w-[400px] justify-center">
-            <motion.h3
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="font-display text-2xl font-bold text-gradient mb-2"
-            >
-              Additional Services
-            </motion.h3>
-            {additionalServices.map((service, i) => (
-              <motion.div 
-                key={i} 
-                className="glass rounded-xl p-5 border border-white/10 hover:border-primary/50 transition-all duration-300 group"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.02, x: 5 }}
-              >
-                <h4 className="font-display font-bold text-foreground mb-1 group-hover:text-gradient transition-all duration-300">{service.name}</h4>
-                <p className="text-primary font-medium text-sm mb-1">{service.price}</p>
-                <p className="text-muted-foreground text-xs">{service.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll to explore</span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2"
-          >
-            <motion.div className="w-1.5 h-1.5 rounded-full bg-primary" />
-          </motion.div>
-        </motion.div>
       </div>
     </div>
   );
