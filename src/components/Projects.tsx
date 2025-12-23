@@ -348,18 +348,20 @@ const Projects = () => {
         <div className="relative">
           <div 
             ref={mobileScrollRef}
-            className="flex gap-4 pb-4 overflow-x-auto overflow-y-hidden snap-x snap-mandatory"
+            className="flex gap-4 pb-4 px-4 overflow-x-auto overflow-y-hidden snap-x snap-mandatory"
             style={{ 
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               overscrollBehaviorX: 'contain',
               overscrollBehaviorY: 'auto',
-              touchAction: 'pan-x pan-y'
+              touchAction: 'pan-x pan-y',
+              scrollPaddingLeft: '16px',
+              scrollPaddingRight: '16px'
             }}
           >
             {pricing.map((plan, i) => (
-              <div key={i} className="snap-start flex-shrink-0 w-[85vw] max-w-[350px] first:ml-0">
+              <div key={i} className="snap-center flex-shrink-0 w-[80vw] max-w-[320px]">
                 <PricingCard plan={plan} index={i} />
               </div>
             ))}
