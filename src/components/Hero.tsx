@@ -34,7 +34,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6"
+          className="text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto mb-6"
         >
           From intelligent chatbots and voice agents to custom web development and branding—we deliver end-to-end digital solutions that automate, elevate, and scale your business 24/7.
         </motion.p>
@@ -43,7 +43,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-muted-foreground mb-8"
+          className="text-foreground/80 mb-8"
         >
           AI automation • Web & app development • Logo design • Voice agents
         </motion.p>
